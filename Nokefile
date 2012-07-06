@@ -1,0 +1,16 @@
+path = require('path');
+
+noke.require({
+  coffee: require('coffee-script'),
+  less: require('less')
+});
+
+noke.rule('coffee',
+  {sourceDir: 'src', files: '*.coffee', destDir: 'lib'});
+
+
+var lessDir = path.join('vendor', 'bootstrap', 'less');
+
+noke.rule('less',
+  {sourceDir: 'src/style', destDir: 'www/css', files: 'app.less'},
+  {paths: [lessDir]});
