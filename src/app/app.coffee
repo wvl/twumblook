@@ -1,19 +1,25 @@
 
+require '../templates'
 backbone = require 'backbone'
-Home = require './views'
+views = require './views/index'
 page = require 'page'
-# jquery = require 'jquery'
 
 module.exports = app = {}
-$ = if (typeof window != 'undefined') then window.$ else null
+
+if (typeof window != 'undefined')
+  window.browser = true
+  $ = window.$
+else
+  global.browser = false
+  $ = null
 
 login = ->
   console.log "login"
-  new Home({el: $('#app'), text: 'Login'})
+  new views.Login({el: $('#app'), text: 'Login'})
 
 home = ->
   console.log "home"
-  new Home({el: $('#app'), text: 'Home'})
+  new views.Home({el: $('#app'), text: 'Home'})
 
 page('/', home)
 page('/login', login)

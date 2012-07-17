@@ -1,0 +1,6 @@
+<h1>{text}</h1>
+<a href="/app/">Back to home</a>
+<form>
+  <input />
+  <button class="btn">Login!</button>
+</form>

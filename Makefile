@@ -23,9 +23,8 @@ NCTCOMPILED = $(NCT:templates/%.nct=lib/templates/%.js)
 lib/templates/%.js: templates/%.nct
 	$(BINDIR)/nct --dir templates/ $< > $@
 
-lib/templates.js: $(NCTCOMPILED)
-	echo "if (typeof define !== 'function') { var define = (require('amdefine'))(module); }\n" > $@
-	echo "define(['nct'], function(nct) {" >> $@
+www/js/templates.js: $(NCTCOMPILED)
+	echo "define(['nct'], function(nct) {" > $@
 	cat $(NCTCOMPILED) >> $@
 	echo "});" >> $@
 
@@ -59,7 +58,7 @@ www/js/vendor/page.js: node_modules/page/build/page.js
 
 VENDORJS = jquery underscore moment backbone nct page
 VENDORJS := $(VENDORJS:%=www/js/vendor/%.js)
-JSFILES = lib/templates.js www/js/require.js
+JSFILES = www/js/templates.js www/js/require.js
 
 all: $(SRCJS) $(VENDORJS) $(REQUIREAPPJS) www/css/app.css $(JSFILES)
 

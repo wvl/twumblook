@@ -34,8 +34,14 @@ app.configure 'development', ->
 app.get '/', (req,res) ->
   res.render 'index', {pageTitle: 'Hello World', msg: "woot!", usingNct: true}
 
+nct.onLoad = (name) ->
+  dir = app.get('views')
+  pathname = path.join(dir, name+'.nct')
+  return false unless fs.existsSync(pathname)
+  fs.readFileSync pathname, 'utf8'
+
+
 app.get /^\/app(\/?(.*))/, (req,res) ->
-  console.log "matched path: ", req.path, req.path.slice(4)
   layout = fs.readFileSync(path.join(__dirname, '../templates/layout.nct'), 'utf8')
   html = nct.renderTemplate(layout, {})
   $ = cheerio.load(html)
