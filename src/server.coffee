@@ -7,8 +7,11 @@ http    = require 'http'
 cons    = require 'consolidate'
 cheerio = require 'cheerio'
 nct     = require 'nct'
-
 global.jQuery = require 'cheerio'
+Backbone = require 'backbone'
+Backbone.sync = (method, model, options) ->
+  console.log "Override sync for the server?", options
+  options?.success({username: 'wayne'})
 
 client  = require('./app/app')
 
@@ -40,13 +43,13 @@ nct.onLoad = (name) ->
   return false unless fs.existsSync(pathname)
   fs.readFileSync pathname, 'utf8'
 
-
 app.get /^\/app(\/?(.*))/, (req,res) ->
   layout = fs.readFileSync(path.join(__dirname, '../templates/layout.nct'), 'utf8')
   html = nct.renderTemplate(layout, {})
   $ = cheerio.load(html)
-  client.render($, req.path.slice(4))
-  res.send $.html()
+  client.render $, req.path.slice(4), ->
+    console.log "Done render"
+    res.send $.html()
 
 app.get '/jade', (req,res) ->
   res.render 'index.jade', {pageTitle: 'Hello World', msg: "woot!", usingJade: true}

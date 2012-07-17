@@ -24,7 +24,7 @@ lib/templates/%.js: templates/%.nct
 	$(BINDIR)/nct --dir templates/ $< > $@
 
 www/js/templates.js: $(NCTCOMPILED)
-	echo "define(['nct'], function(nct) {" > $@
+	echo "define(['nct','underscore'], function(nct, _) {" > $@
 	cat $(NCTCOMPILED) >> $@
 	echo "});" >> $@
 
