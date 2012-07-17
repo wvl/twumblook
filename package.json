@@ -8,7 +8,7 @@
   { "bcrypt": "*"
   , "commander": "*"
   , "cookie-sessions": "*"
-  , "express": "*"
+  , "express": ">3.0.0beta4"
   , "fa": "*"
   , "gm": "*"
   , "less": "*"

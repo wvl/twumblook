@@ -1,0 +1,9 @@
+{extends layout}
+{block main}
+  <h1>Nct engine</h1>
+  {if usingNct}
+    <h2>{msg}!</h2>
+  {else}
+    <h2>Get on it!</h2>
+  {/if}
+{/block}
