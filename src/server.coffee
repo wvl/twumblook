@@ -1,8 +1,16 @@
 
+fs      = require 'fs'
+path    = require 'path'
 express = require 'express'
 # api     = require './api'
 http    = require 'http'
 cons    = require 'consolidate'
+cheerio = require 'cheerio'
+nct     = require 'nct'
+
+global.jQuery = require 'cheerio'
+
+client  = require('./app/app')
 
 app = express()
 
@@ -25,6 +33,14 @@ app.configure 'development', ->
 
 app.get '/', (req,res) ->
   res.render 'index', {pageTitle: 'Hello World', msg: "woot!", usingNct: true}
+
+app.get /^\/app(\/?(.*))/, (req,res) ->
+  console.log "matched path: ", req.path, req.path.slice(4)
+  layout = fs.readFileSync(path.join(__dirname, '../templates/layout.nct'), 'utf8')
+  html = nct.renderTemplate(layout, {})
+  $ = cheerio.load(html)
+  client.render($, req.path.slice(4))
+  res.send $.html()
 
 app.get '/jade', (req,res) ->
   res.render 'index.jade', {pageTitle: 'Hello World', msg: "woot!", usingJade: true}

@@ -4,8 +4,9 @@
 , "version": "0.0.1"
 , "private": true
 , "repository": { "url": "" }
-, "dependencies": 
+, "dependencies":
   { "bcrypt": "*"
+  , "cheerio": "*"
   , "commander": "*"
   , "cookie-sessions": "*"
   , "express": ">3.0.0beta4"
@@ -24,6 +25,7 @@
   { "chai": "*"
   , "coffee-script": "*"
   , "mocha": "*"
+  , "requirejs": "*"
   , "sinon": "*"
   , "sinon-chai": "*"
   , "uglify-js": "*"

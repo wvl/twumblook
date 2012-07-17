@@ -6,4 +6,6 @@
   {else}
     <h2>Get on it!</h2>
   {/if}
+  <div id="app">
+  </div>
 {/block}

@@ -17,10 +17,16 @@
   </header>
   <div role="main" class="container">
     {block main}
+      <div id="app">
+      </div>
     {/block}
   </div>
   <footer>
   </footer>
+  {if production}
   <script src="/js/app.js"></script>
+  {else}
+  <script data-main="/js/init" src="/js/require.js"></script>
+  {/if}
 </body>
 </html>
