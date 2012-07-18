@@ -50,6 +50,14 @@ exports.filter = (object, fields) ->
     delete object[key] unless _.include(fields, key)
   object
 
+
+# only {name,email,password}, 'name email' => {name,email}
+exports.only = (obj, keys) ->
+  obj = obj || {}
+  # keys = keys.split(new RegExp(/ +/)) if typeof keys == 'string'
+  # k = if (typeof keys == 'string') then keys.split(/ +/) else keys
+  keys.reduce ((ret, key) -> ret[key] = obj[key]; ret), {}
+
 exports.timeAndPlace =
   location: String
   geo: [Number, Number]
