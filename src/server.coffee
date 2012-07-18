@@ -2,20 +2,32 @@
 fs      = require 'fs'
 path    = require 'path'
 express = require 'express'
-# api     = require './api'
+api     = require './api'
 http    = require 'http'
+_       = require 'underscore'
 cons    = require 'consolidate'
 cheerio = require 'cheerio'
 nct     = require 'nct'
 global.jQuery = require 'cheerio'
 Backbone = require 'backbone'
-Backbone.sync = (method, model, options) ->
-  console.log "Override sync for the server?", options
-  options?.success({username: 'wayne'})
-
 client  = require('./app/app')
 
 app = express()
+
+methodMap =
+  create: 'post'
+  update: 'put'
+  delete: 'delete'
+  read:   'get'
+
+Backbone.sync = (method, model, options) ->
+  url = options.url
+  url ?= if _.isFunction(model.url) then model.url() else model.url
+  req = {method: methodMap[method], url}
+  res =
+    send: (json) ->
+      options.success(json)
+  app.router req, res, ->
 
 app.engine('nct', cons.nct)
 app.engine('jade', cons.jade)
@@ -33,6 +45,13 @@ app.configure ->
 
 app.configure 'development', ->
   app.use express.errorHandler()
+
+_.each api, (routes, path) ->
+  _.each routes, (fn, method) ->
+    if _.isArray(fn)
+      app[method] '/api/'+path, fn...
+    else
+      app[method] '/api/'+path, fn
 
 app.get '/', (req,res) ->
   res.render 'index', {pageTitle: 'Hello World', msg: "woot!", usingNct: true}

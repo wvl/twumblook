@@ -28,6 +28,7 @@
   , "requirejs": "*"
   , "sinon": "*"
   , "sinon-chai": "*"
+  , "supertest": "*"
   , "uglify-js": "*"
   }
 , "scripts":

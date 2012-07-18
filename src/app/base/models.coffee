@@ -6,12 +6,11 @@ class Model extends Backbone.Model
   idAttribute: '_id'
 
   @find: (id, callback) ->
-    model = new @({id})
+    model = new @()
+    model.set(model.idAttribute, id)
     success = (m) ->
-      console.log "success", m
       callback(null, m)
     error = (m) ->
-      console.log "error", m
       callback(m)
     model.fetch {success, error}
 

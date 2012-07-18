@@ -28,12 +28,12 @@ loadUser = (ctx,next) ->
     if err
       console.log "Handle user not found"
     else
-      console.log "Result from find: ", err, user
+      # console.log "Result from find: ", err, user
       ctx.user = user if user
       next()
 
 profile = (ctx) ->
-  console.log "profile of: ", ctx.user
+  # console.log "profile of: ", ctx.user
   new views.Profile({el: $('#app'), model: ctx.user})
 
 wrap = (fn) ->
@@ -42,9 +42,6 @@ wrap = (fn) ->
     ctx.state.callback() if ctx.state.callback
 
 page.base('/app')
-page '*', (ctx,next) ->
-  console.log "Catchall handler?"
-  next()
 page('/', wrap(home))
 page('/login', login)
 page('/profile/:user', loadUser, wrap(profile))
