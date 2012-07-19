@@ -2,9 +2,9 @@ u = require './users'
 
 module.exports =
   users:
-    get: u.listUsers
-    post: u.createUser
+    get: u.list
+    post: u.create
   'users/:name':
-    get: [u.findUser, u.getUser]
-    delete: [u.findUser, u.deleteUser]
-    put: [u.findUser, u.updateUser]
+    get: [u.find, u.get]
+    delete: [u.find, u.delete]
+    put: [u.find, u.update]

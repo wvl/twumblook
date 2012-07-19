@@ -8,10 +8,9 @@ lib/%.js: src/%.coffee
 	$(BINDIR)/coffee -b -o $(@D) -c $<
 
 www/js/app/%.js: lib/app/%.js
-	echo "if (typeof define !== 'function') { var define = (require('amdefine'))(module); }" > $@
-	echo "define(function (require,exports,module) {\n" >> $@
+	echo "define(function (require,exports,module) {\n" > $@
 	cat $< >> $@
-	echo "return module.exports;\n});" >> $@
+	echo "\n\nreturn module.exports;\n});" >> $@
 
 LESS = $(shell find src/style -name "*.less")
 www/css/app.css: $(LESS)

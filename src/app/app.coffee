@@ -1,8 +1,11 @@
 
 require '../templates'
 backbone = require 'backbone'
+base = require './base/index'
+viewModels = require './view-models'
+base.setViewModels(viewModels)
 views = require './views/index'
-models = require './models/index'
+models = require './models'
 page = require 'page'
 
 module.exports = app = {}
@@ -16,12 +19,14 @@ else
 
 login = (ctx) ->
   console.log "login"
-  new views.Login({el: $('#app'), text: 'Login'})
+  view = new views.Login({el: $('#app'), text: 'Login'})
+  view.render()
   ctx.state.callback() if ctx.state.callback
 
 home = (ctx) ->
   console.log "home"
-  new views.Home({el: $('#app'), text: 'Home'})
+  view = new views.Home({el: $('#app'), text: 'Home'})
+  view.render()
 
 loadUser = (ctx,next) ->
   models.User.find ctx.params.user, (err, user) ->
@@ -34,7 +39,8 @@ loadUser = (ctx,next) ->
 
 profile = (ctx) ->
   # console.log "profile of: ", ctx.user
-  new views.Profile({el: $('#app'), model: ctx.user})
+  view = new views.Profile({el: $('#app'), model: ctx.user})
+  view.render()
 
 wrap = (fn) ->
   (ctx) ->

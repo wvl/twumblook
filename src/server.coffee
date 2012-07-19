@@ -67,7 +67,6 @@ app.get /^\/app(\/?(.*))/, (req,res) ->
   html = nct.renderTemplate(layout, {})
   $ = cheerio.load(html)
   client.render $, req.path.slice(4), ->
-    console.log "Done render"
     res.send $.html()
 
 app.get '/jade', (req,res) ->

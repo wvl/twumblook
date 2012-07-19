@@ -1,18 +1,18 @@
 
 module.exports = api = {}
 
-api.findUser = (req, res, next) ->
+api.find = (req, res, next) ->
   req.user = {name: 'Wayne', username: 'wvl'}
   next()
 
-api.getUser = (req, res) ->
+api.get = (req, res) ->
   res.send req.user
 
-api.listUsers = (req, res) ->
+api.list = (req, res) ->
   res.send []
 
-api.createUser = (req, res) ->
+api.create = (req, res) ->
 
-api.deleteUser = (req, res) ->
+api.delete = (req, res) ->
 
-api.updateUser = (req, res) ->
+api.update = (req, res) ->

@@ -1,19 +1,10 @@
 
-backbone = require 'backbone'
-nct = require 'nct'
+base = require '../base/index'
 
-class Login extends backbone.View
+class Login extends base.ItemView
   initialize: ->
     @text = @options.text || "Hello Backbone Login"
-    if browser and @$el.data('ssr')
-      console.log "skipping render"
-      @$el.data('ssr', false)
-    else
-      @$el.attr('data-ssr', true) unless browser
-      console.log "rendering"
-      @render()
 
-  render: ->
-    @$el.html nct.render('login', {@text})
+  data: -> {@text}
 
 module.exports = Login
