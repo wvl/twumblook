@@ -11,6 +11,7 @@ nct        = require 'nct'
 Backbone   = require 'backbone'
 Backbone.$ = cheerio
 client     = require('./app/app')
+domain     = require 'domain'
 
 module.exports = app = express()
 
@@ -21,11 +22,16 @@ methodMap =
   read:   'get'
 
 Backbone.sync = (method, model, options) ->
+  timeout = setTimeout (->
+    options.error("Server Backbone.sync timeout")
+  ), 2000
+
   url = options.url
   url ?= if _.isFunction(model.url) then model.url() else model.url
   req = {method: methodMap[method], url}
   res =
     send: (json) ->
+      clearTimeout timeout
       options.success(json)
   app.router req, res, ->
 
@@ -63,11 +69,15 @@ nct.onLoad = (name) ->
   fs.readFileSync pathname, 'utf8'
 
 app.get /^\/app(\/?(.*))/, (req,res) ->
+  d = domain.create()
   layout = fs.readFileSync(path.join(__dirname, '../templates/layout.nct'), 'utf8')
   html = nct.renderTemplate(layout, {})
   $ = cheerio.load(html)
-  client.render $, req.path.slice(4), ->
-    res.send $.html()
+  d.on 'error', (er) ->
+    console.error "Caught error on domain", er
+  d.run ->
+    client.render $, req.path.slice(4), ->
+      res.send $.html()
 
 app.get '/jade', (req,res) ->
   res.render 'index.jade', {pageTitle: 'Hello World', msg: "woot!", usingJade: true}

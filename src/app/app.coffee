@@ -1,3 +1,6 @@
+_ = require 'underscore'
+_.underscored = (str) ->
+  str.replace(/([a-z\d])([A-Z]+)/g, '$1_$2').replace(/\-|\s+/g, '_').toLowerCase()
 
 require '../templates'
 backbone = require 'backbone'
@@ -73,4 +76,12 @@ app.init = ->
 app.render = (jq, route='/', callback) ->
   $ = jq
   main = new base.RegionManager($('#app'))
-  page.show(route, {callback})
+  timeout = setTimeout (->
+    console.log("Page show timeout")
+    callback(new Error("page show teimeout"))
+  ), 2000
+  cb = (args...) ->
+    clearTimeout timeout
+    callback(args...)
+
+  page.show(route, {callback: cb})

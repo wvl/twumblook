@@ -1,8 +1,6 @@
 Backbone = require 'backbone'
 _ = require 'underscore'
 nct      = require 'nct'
-underscored = (str) ->
-  str.replace(/([a-z\d])([A-Z]+)/g, '$1_$2').replace(/\-|\s+/g, '_').toLowerCase()
 
 # A single item view implementation that contains code for rendering
 # and calling several methods on extended views, such as `onRender`.
@@ -13,11 +11,11 @@ class ItemView extends Backbone.View
     @namespace = @options.namespace if @options.namespace
     @workflow ?= @options.workflow
     unless @template
-      name = underscored(@constructor.name)
+      name = _.underscored(@constructor.name)
       @template = if @namespace then @namespace + '/' + name else name
 
   id: ->
-    id = 'view-'+underscored(@constructor.name)
+    id = 'view-'+_.underscored(@constructor.name)
     id = id+'-'+@model.id if @model and @model.id
     id
 
