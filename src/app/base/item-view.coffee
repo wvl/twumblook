@@ -12,6 +12,7 @@ class ItemView extends Backbone.View
     @template ?= @options.template
     @namespace = @options.namespace if @options.namespace
     @workflow ?= @options.workflow
+    @id ?= 'view-'+underscored(@constructor.name)
     unless @template
       name = underscored(@constructor.name)
       @template = if @namespace then @namespace + '/' + name else name
@@ -29,19 +30,43 @@ class ItemView extends Backbone.View
     ctx = new nct.Context(_.extend({@workflow}, viewdata))
     ctx.push(@data())
 
+  # Ensure that the View has a DOM element to render into.
+  # If `this.el` is a string, pass it through `$()`, take the first
+  # matching element, and re-assign it to `el`. Otherwise, create
+  # an element from the `id`, `className` and `tagName` properties.
+  _ensureElement: ->
+    console.log "ensureElement", @el
+    return @setElement(@el, false) if @el
+    console.log "Find id?", @id
+    @el = Backbone.$('#'+@id) if @id
+    return @setElement(@el, false) if @el.length
+    console.log "making element"
+    attrs = _.extend({}, @attributes)
+    attrs.id = @id if @id
+    attrs['class'] = @className if @className
+    @setElement @make(@tagName, attrs), false
+
+  #   var el = this.make('li', {'class': 'row'}, this.model.escape('title'));
+  make: (tagName, attributes, content) ->
+    el = if browser then document.createElement(tagName) else Backbone.$("<"+tagName+"></"+tagName+">")
+    Backbone.$(el).attr(attributes) if attributes
+    Backbone.$(el).html(content) if content != null
+    el
+
   renderTemplate:  ->
     return unless @template
-    if browser and @$el.data('ssr')
+    if browser and $(@$el).data('ssr')
       console.log "skipping render", @template
-      @$el.data('ssr', false)
+      $(@$el).data('ssr', false)
     else
       @$el.attr('data-ssr', true) unless browser
       @$el.html nct.render(@template, @context())
-      console.log "rendered", @template
+      console.log "rendered", @template, @$el.html()
 
   # Render the view with nct templates
   # You can override this in your view definition.
   render: ->
+    console.log "ItemView:", @el, @$el
     @renderTemplate()
     @onRender()
     @

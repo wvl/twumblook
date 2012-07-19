@@ -9,6 +9,7 @@ models = require './models'
 page = require 'page'
 
 module.exports = app = {}
+main = null
 
 if (typeof window != 'undefined')
   window.browser = true
@@ -19,8 +20,7 @@ else
 
 login = (ctx) ->
   console.log "login"
-  view = new views.Login({el: $('#app'), text: 'Login'})
-  view.render()
+  main.show new views.Login({text: 'Login'})
   ctx.state.callback() if ctx.state.callback
 
 home = (ctx) ->
@@ -55,10 +55,12 @@ page '*', ->
   console.log "404 Catchall handler?"
 
 app.init = ->
+  main = new base.RegionManager($('#app'))
   page()
   # home = new Home({el: $('#app')})
   console.log "Init app??"
 
 app.render = (jq, route='/', callback) ->
   $ = jq
+  main = new base.RegionManager($('#app'))
   page.show(route, {callback})

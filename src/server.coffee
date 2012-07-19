@@ -1,16 +1,16 @@
 
-fs      = require 'fs'
-path    = require 'path'
-express = require 'express'
-api     = require './api'
-http    = require 'http'
-_       = require 'underscore'
-cons    = require 'consolidate'
-cheerio = require 'cheerio'
-nct     = require 'nct'
-global.jQuery = require 'cheerio'
-Backbone = require 'backbone'
-client  = require('./app/app')
+fs         = require 'fs'
+path       = require 'path'
+express    = require 'express'
+api        = require './api'
+http       = require 'http'
+_          = require 'underscore'
+cons       = require 'consolidate'
+cheerio    = require 'cheerio'
+nct        = require 'nct'
+Backbone   = require 'backbone'
+Backbone.$ = cheerio
+client     = require('./app/app')
 
 app = express()
 
