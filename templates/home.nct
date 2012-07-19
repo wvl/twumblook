@@ -2,6 +2,6 @@
 <ul>
 <li><a href="/app/login">Login</a></li>
 <li><a href="/app/wayne/dashboard">Dashboard</a></li>
-<li><a href="/app/profile/wayne">Profile</a></li>
-<li><a href="/app/profile/wayne/blog">Blog</a></li>
+<li><a href="/app/wayne/profile">Profile</a></li>
+<li><a href="/app/wayne/blog">Blog</a></li>
 </ul>

@@ -21,16 +21,6 @@ else
   global.browser = false
   $ = null
 
-login = (ctx) ->
-  console.log "login"
-  main.show new views.Login({text: 'Login'})
-  ctx.state.callback() if ctx.state.callback
-
-home = (ctx) ->
-  console.log "home"
-  view = new views.Home({el: $('#app'), text: 'Home'})
-  view.render()
-
 loadUser = (ctx,next) ->
   return next() if ctx.user and ctx.user.get('username')==ctx.params.user
   console.log "Loading user: ", ctx.params.user
@@ -45,31 +35,24 @@ loadUser = (ctx,next) ->
 loadEntries = (ctx, next) ->
   ctx.user.entries.fetch({success: next})
 
-profile = (ctx) ->
-  # console.log "profile of: ", ctx.user
-  view = new views.Profile({el: $('#app'), model: ctx.user})
-  view.render()
+home      = (ctx) -> new views.Home({text: 'Home'})
+login     = (ctx) -> new views.Login({text: 'Login'})
+profile   = (ctx) -> new views.Profile({model: ctx.user})
+blog      = (ctx) -> new views.Blog({model: ctx.user, collection: ctx.user.entries})
+dashboard = (ctx) -> new views.Dashboard({model: ctx.user})
 
-blog = (ctx) ->
-  view = new views.Blog({el: $('#app'), model: ctx.user, collection: ctx.user.entries})
-  view.render()
-
-dashboard = (ctx) ->
-  view = new views.Dashboard({el: $('#app'), model: ctx.user})
-  view.render()
-
-
-wrap = (fn) ->
+show = (fn) ->
   (ctx) ->
-    fn(ctx)
+    main.show fn(ctx)
     ctx.state.callback() if ctx.state.callback
 
 page.base('/app')
-page('/', wrap(home))
-page('/login', login)
-page('/:user/dashboard', loadUser, wrap(dashboard))
-page('/profile/:user', loadUser, wrap(profile))
-page('/profile/:user/blog', loadUser, loadEntries, wrap(blog))
+page '/', show(home)
+page '/login', show(login)
+page '/:user/*', loadUser
+page '/:user/dashboard', show(dashboard)
+page '/:user/profile', show(profile)
+page '/:user/blog', loadEntries, show(blog)
 page '*', ->
   console.log "404 Catchall handler?"
 
