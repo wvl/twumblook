@@ -54,6 +54,11 @@ blog = (ctx) ->
   view = new views.Blog({el: $('#app'), model: ctx.user, collection: ctx.user.entries})
   view.render()
 
+dashboard = (ctx) ->
+  view = new views.Dashboard({el: $('#app'), model: ctx.user})
+  view.render()
+
+
 wrap = (fn) ->
   (ctx) ->
     fn(ctx)
@@ -62,6 +67,7 @@ wrap = (fn) ->
 page.base('/app')
 page('/', wrap(home))
 page('/login', login)
+page('/:user/dashboard', loadUser, wrap(dashboard))
 page('/profile/:user', loadUser, wrap(profile))
 page('/profile/:user/blog', loadUser, loadEntries, wrap(blog))
 page '*', ->

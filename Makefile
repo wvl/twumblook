@@ -15,7 +15,7 @@ www/js/app/%.js: lib/app/%.js
 
 LESS = $(shell find src/style -name "*.less")
 www/css/app.css: $(LESS)
-	$(BINDIR)/lessc -Ivendor/bootstrap/less src/app.less > $@
+	$(BINDIR)/lessc -Ivendor/bootstrap/less src/style/app.less > $@
 
 NCT = $(shell find templates -name "*.nct")
 NCTCOMPILED = $(NCT:templates/%.nct=lib/templates/%.js)

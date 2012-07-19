@@ -19,6 +19,10 @@ class ItemView extends Backbone.View
     id = id+'-'+@model.id if @model and @model.id
     id
 
+  delegateEvents: (events) ->
+    return unless browser
+    super
+
   # override to specify title,subtitle,subnav
   view: {}
 
