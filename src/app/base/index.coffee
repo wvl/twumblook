@@ -2,10 +2,12 @@ _ = require 'underscore'
 
 module.exports = base = {}
 
-base.Model = require './models'
-base.ItemView = require './item-view'
-base.ViewModel = require './view-model'
-base.RegionManager = require './region-manager'
+base.Model          = require './model'
+base.Collection     = require './collection'
+base.ViewModel      = require './view-model'
+base.ItemView       = require './item-view'
+base.CollectionView = require './collection-view'
+base.RegionManager  = require './region-manager'
 
 base.setViewModels = (viewModels) ->
   base.ItemView.viewModels = viewModels

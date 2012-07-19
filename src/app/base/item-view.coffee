@@ -12,10 +12,14 @@ class ItemView extends Backbone.View
     @template ?= @options.template
     @namespace = @options.namespace if @options.namespace
     @workflow ?= @options.workflow
-    @id ?= 'view-'+underscored(@constructor.name)
     unless @template
       name = underscored(@constructor.name)
       @template = if @namespace then @namespace + '/' + name else name
+
+  id: ->
+    id = 'view-'+underscored(@constructor.name)
+    id = id+'-'+@model.id if @model and @model.id
+    id
 
   # override to specify title,subtitle,subnav
   view: {}
@@ -35,14 +39,14 @@ class ItemView extends Backbone.View
   # matching element, and re-assign it to `el`. Otherwise, create
   # an element from the `id`, `className` and `tagName` properties.
   _ensureElement: ->
-    console.log "ensureElement", @el
     return @setElement(@el, false) if @el
-    console.log "Find id?", @id
-    @el = Backbone.$('#'+@id) if @id
-    return @setElement(@el, false) if @el.length
-    console.log "making element"
+    if @id
+      id = if _.isFunction(@id) then @id() else @id
+      @el = Backbone.$('#'+id)
+      return @setElement(@el, false) if @el.length
     attrs = _.extend({}, @attributes)
     attrs.id = @id if @id
+    attrs.id = @id() if @id and _.isFunction(@id)
     attrs['class'] = @className if @className
     @setElement @make(@tagName, attrs), false
 
@@ -61,12 +65,11 @@ class ItemView extends Backbone.View
     else
       @$el.attr('data-ssr', true) unless browser
       @$el.html nct.render(@template, @context())
-      console.log "rendered", @template, @$el.html()
+      console.log "rendered", @template
 
   # Render the view with nct templates
   # You can override this in your view definition.
   render: ->
-    console.log "ItemView:", @el, @$el
     @renderTemplate()
     @onRender()
     @

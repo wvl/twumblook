@@ -29,6 +29,8 @@ home = (ctx) ->
   view.render()
 
 loadUser = (ctx,next) ->
+  return next() if ctx.user and ctx.user.get('username')==ctx.params.user
+  console.log "Loading user: ", ctx.params.user
   models.User.find ctx.params.user, (err, user) ->
     if err
       console.log "Handle user not found"
@@ -37,9 +39,16 @@ loadUser = (ctx,next) ->
       ctx.user = user if user
       next()
 
+loadEntries = (ctx, next) ->
+  ctx.user.entries.fetch({success: next})
+
 profile = (ctx) ->
   # console.log "profile of: ", ctx.user
   view = new views.Profile({el: $('#app'), model: ctx.user})
+  view.render()
+
+blog = (ctx) ->
+  view = new views.Blog({el: $('#app'), model: ctx.user, collection: ctx.user.entries})
   view.render()
 
 wrap = (fn) ->
@@ -51,6 +60,7 @@ page.base('/app')
 page('/', wrap(home))
 page('/login', login)
 page('/profile/:user', loadUser, wrap(profile))
+page('/profile/:user/blog', loadUser, loadEntries, wrap(blog))
 page '*', ->
   console.log "404 Catchall handler?"
 

@@ -17,3 +17,4 @@ mongoose.connection.on 'open', ->
   clearTimeout(mongoTimeout)
 
 exports.User = require './user'
+exports.Entry = require './entry'
