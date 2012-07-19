@@ -12,7 +12,7 @@ Backbone   = require 'backbone'
 Backbone.$ = cheerio
 client     = require('./app/app')
 
-app = express()
+module.exports = app = express()
 
 methodMap =
   create: 'post'
@@ -74,6 +74,3 @@ app.get '/jade', (req,res) ->
 
 app.get '/fast', (req, res) ->
   res.send 'ok'
-
-http.createServer(app).listen app.get('port'), ->
-  console.log("Express server listening on http://localhost:" + app.get('port'))
