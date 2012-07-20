@@ -42,10 +42,9 @@ class ItemView extends Backbone.View
   # an element from the `id`, `className` and `tagName` properties.
   _ensureElement: ->
     return @setElement(@el, false) if @el
-    if @id
-      id = if _.isFunction(@id) then @id() else @id
-      @el = Backbone.$('#'+id)
-      return @setElement(@el, false) if @el.length
+    if @id and browser
+      el = $('#'+ if _.isFunction(@id) then @id() else @id)
+      return @setElement(el, false) if el.length
     attrs = _.extend({}, @attributes)
     attrs.id = @id if @id
     attrs.id = @id() if @id and _.isFunction(@id)
@@ -61,9 +60,9 @@ class ItemView extends Backbone.View
 
   renderTemplate:  ->
     return unless @template
-    if browser and $(@$el).data('ssr')
+    if browser and @$el.data('ssr')
       console.log "skipping render", @template
-      $(@$el).data('ssr', false)
+      @$el.data('ssr', false)
     else
       @$el.attr('data-ssr', true) unless browser
       @$el.html nct.render(@template, @context())

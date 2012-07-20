@@ -59,7 +59,10 @@ www/js/vendor/backbone.js: node_modules/backbone/backbone.js
 www/js/vendor/page.js: node_modules/page/build/page.js
 	cp $< $@
 
-VENDORJS = jquery underscore moment backbone nct page
+www/js/vendor/toObject.js: vendor/js/toObject.js
+	cp $< $@
+
+VENDORJS = jquery underscore moment backbone nct page toObject
 VENDORJS := $(VENDORJS:%=www/js/vendor/%.js)
 JSFILES = www/js/templates.js www/js/require.js www/js/sockjs-0.3.2.min.js
 

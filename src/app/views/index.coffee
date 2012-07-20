@@ -1,7 +1,7 @@
 
 module.exports = views = {}
 
-views.Login     = require './login'
+views.auth      = require './auth'
 views.Home      = require './home'
 views.Profile   = require './profile'
 views.Blog      = require './blog'

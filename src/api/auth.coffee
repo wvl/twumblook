@@ -6,14 +6,14 @@ local      = require 'passport-local'
 module.exports = api = {}
 
 api.initializePassport = ->
-  passport.serializeUser (user, done) -> done(null, user.id)
+  passport.serializeUser (user, done) -> done(null, user._id)
   passport.deserializeUser (id, done) -> User.findById id, done
 
   passport.use new local.Strategy (username, password, done) ->
     User.authenticate username, password, (err, user) ->
       return done(err) if err and user==undefined
       return done(null, false, err) if err and user==false
-      done(null, user)
+      done(null, user.toApi())
 
 # login: email/password creates a session
 api.login = (req,res,next) ->
@@ -31,3 +31,6 @@ api.login = (req,res,next) ->
 api.logout = (req, res) ->
   req.logOut()
   res.send {}
+
+api.session = (req, res) ->
+  res.send req.user

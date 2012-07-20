@@ -6,6 +6,9 @@ base.Model          = require './model'
 base.Collection     = require './collection'
 base.ViewModel      = require './view-model'
 base.ItemView       = require './item-view'
+formView            = require './form-view'
+base.FormView       = formView.FormView
+base.FormViewMixin  = formView.FormViewMixin
 base.CollectionView = require './collection-view'
 base.RegionManager  = require './region-manager'
 

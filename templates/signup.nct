@@ -1,7 +1,7 @@
 <div class="row">
   <div class="span5 offset3">
-    <p class="pull-right">Need an account? <a href="/signup"
-    class="btn">Sign up for a free account</a></p>
+    <p class="pull-right">Already have an account? <a href="login"
+    class="btn">Login</a></p>
   </div>
   <div class="span6 offset3 breathe-top">
     <form class='signup form-horizontal'>
@@ -21,6 +21,25 @@
         {/if}
       </div>
     </div>
+
+    <div class="control-group {error.name}">
+      <label class="control-label" for="name">Name</label>
+      <div class="controls">
+        <input class="xlarge span3" name="name" type="text" value="{name}">
+        {if error.name}
+          <span class="help-inline">{error.name_message}</span>
+        {/if}
+      </div>
+    </div>
+    <div class="control-group {error.email}">
+      <label class="control-label" for="email">Email</label>
+      <div class="controls">
+        <input class="xlarge span3" id="email" name="email" type="text" value="{ email }">
+        {if error.email}
+        <span class="help-inline">{error.email_message}</span>
+        {/if}
+      </div>
+    </div>
     <div class="control-group {error.password}">
       <label class="control-label" for="password">Password</label>
       <div class="controls">
@@ -31,7 +50,7 @@
       </div>
     </div>
     <div class="form-actions">
-      <button type="submit" class="btn btn-primary">Login</button>
+      <button type="submit" class="btn btn-primary">Signup</button>
     </div>
     </fieldset>
     </form>

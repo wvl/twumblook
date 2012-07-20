@@ -44,7 +44,20 @@ loggedIn = (ctx, next) ->
   page.show('/')
 
 home      = (ctx) -> new views.Home({text: 'Home'})
-login     = (ctx) -> new views.Login({text: 'Login'})
+
+login     = (ctx) ->
+  view = new views.auth.Login()
+  view.on 'success', (session) ->
+    store.user = session.user
+    page('/')
+
+signup    = (ctx) ->
+  view = new views.auth.Signup()
+  view.on 'success', (user) ->
+    console.log "Signup success"
+    store.user = user
+    page('/')
+
 profile   = (ctx) -> new views.Profile({model: ctx.user})
 blog      = (ctx) -> new views.Blog({model: ctx.user, collection: ctx.user.entries})
 dashboard = (ctx) -> new views.Dashboard({model: ctx.user})
@@ -57,6 +70,7 @@ show = (fn) ->
 # page.base('/app')
 page '/', show(home)
 page '/login', show(login)
+page '/signup', show(signup)
 page '/:user/profile', loadUser, show(profile)
 page '/:user/blog', loadUser, loadEntries, show(blog)
 page '/dashboard', loggedIn, show(dashboard)
@@ -64,7 +78,7 @@ page '*', ->
   console.log "404 Catchall handler?"
 
 app.init = (user) ->
-  console.log "Init app"
+  console.log "Init app", user
   store.user = new models.User(user) if user
   main = new base.RegionManager($('#app'))
   page()

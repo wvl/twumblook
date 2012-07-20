@@ -31,7 +31,7 @@
       </div>
     </div>
   </div>
-  <div id="app" class="container">
+  <div id="app" class="container" data-ssr="true">
     {block main}
     {/block}
   </div>
@@ -41,29 +41,15 @@
   <script src="/js/app.js"></script>
   <script>
     require(['app/app'], function(app) {
-      app.init();
+      app.init({- user});
     });
   </script>
   {else}
   <script data-main="/js/init" src="/js/require.js"></script>
   <script>
     require(['app/app'], function(app) {
-      app.init();
+      app.init({- user});
     });
-  </script>
-  <script src="/js/sockjs-0.3.2.min.js"></script>
-  <script>
-   /* var sock = new SockJS('http://twumblook.local:3000/sockjs');*/
-   /* sock.onopen = function() {*/
-   /*     console.log('open');*/
-   /* };*/
-   /* sock.onmessage = function(e) {*/
-   /*     console.log('message', e.data);*/
-   /*     if (e.data === 'reload') console.log("reload");*/
-   /* };*/
-   /* sock.onclose = function() {*/
-   /*     console.log('close');*/
-   /* };*/
   </script>
   {/if}
 </body>

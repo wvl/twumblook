@@ -8,7 +8,6 @@
   { "bcrypt": "*"
   , "cheerio": "*"
   , "commander": "*"
-  , "cookie-sessions": "*"
   , "express": ">3.0.0beta4"
   , "fa": "*"
   , "gm": "*"

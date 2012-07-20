@@ -17,6 +17,13 @@ class Model extends Backbone.Model
   @relations: {}
   @embeddedRelations: {}
 
+  validate: (attrs) ->
+    return unless @validations
+    required = _.filter (@validations.required || []), (f) =>
+      @get(f)==undefined and (!attrs[f] or attrs[f]=='')
+    errors = _.map required, (field) -> {field, code: 'missing_field'}
+    if errors.length then {message: "Validation Failed", errors} else null
+
   # Includes the relations in the output JSON
   # Any relations include just the id of the model
   # Any embedded relation will include the JSON of that model

@@ -1,4 +1,6 @@
 
+{User} = require '../models'
+
 module.exports = api = {}
 
 api.find = (req, res, next) ->
@@ -12,6 +14,9 @@ api.list = (req, res) ->
   res.send []
 
 api.create = (req, res) ->
+  User.createUser req.body, (err, user) ->
+    return res.send(err, 422) if err
+    res.send user
 
 api.delete = (req, res) ->
 

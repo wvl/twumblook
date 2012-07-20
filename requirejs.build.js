@@ -9,6 +9,7 @@
   , 'page': { exports: 'page' }
   , 'socket.io': { exports: 'io' }
   , './templates': { deps: ['nct'] }
+  , 'toObject': { deps: ['jquery'] }
   }
 , paths:
   { 'jquery': '../../vendor/js/jquery-1.7.2.min'
@@ -18,6 +19,7 @@
   , 'nct': '../../node_modules/nct/dist/nct'
   , 'page': '../../node_modules/page/build/page'
   , 'socket.io': '../../vendor/js/socket.io.min'
+  , 'toObject': '../../vendor/js/toObject'
   }
 , name: '../../vendor/js/almond'
 , include: ['../../lib/app']

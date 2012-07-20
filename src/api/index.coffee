@@ -15,5 +15,6 @@ api.routes =
   'users/:username/entries':
     get: [u.find, e.list]
   'session':
+    get: auth.session
     post: auth.login
     delete: auth.logout

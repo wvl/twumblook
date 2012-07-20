@@ -51,12 +51,15 @@ app.configure ->
   app.set 'port', process.env.PORT || 3000
   app.set 'views', __dirname + '/../templates'
   app.set 'view engine', 'nct'
-
   app.use express.favicon()
+
+app.configure 'development', ->
   app.use express.logger('dev')
+
+app.configure ->
   app.use express.cookieParser()
   app.use express.bodyParser()
-  app.use express.session({secret: conf.sessionSecret})
+  app.use express.cookieSession({ secret: conf.sessionSecret, cookie: { maxAge: conf.sessionTimeout }})
   app.use express.methodOverride()
   app.use passport.initialize()
   app.use passport.session()
@@ -91,8 +94,9 @@ app.get '/fast', (req, res) ->
   res.send 'ok'
 
 app.get "/*", (req,res) ->
-  html = nct.renderTemplate(layout, {production: conf.env=='production'})
+  user = if req.user then JSON.stringify(req.user.toApi()) else ""
+  html = nct.renderTemplate(layout, {user, production: conf.env=='production'})
   $ = cheerio.load(html)
-  client.render $, req.path, null, ->
+  client.render $, req.path, req.user?.toApi(), ->
     res.send $.html()
 

@@ -14,7 +14,10 @@ class RegionManager extends Backbone.Events
     @currentView.close() if @currentView?.close
     @currentView = view
     view.render()
-    @$el.html view.$el
+    if browser and @$el.data('ssr')
+      @$el.data('ssr', false)
+    else
+      @$el.html view.$el
     view.onShow() if view.onShow
     # @trigger('show', view)
 

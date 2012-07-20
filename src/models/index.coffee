@@ -2,8 +2,6 @@ _        = require 'underscore'
 conf     = require('../conf')()
 mongoose = require 'mongoose'
 
-console.log "connecting to: ", conf.mongoDatabase
-
 mongoose.connect(conf.mongodb)
 mongoose.connection.on 'error', (err) ->
   console.error err
