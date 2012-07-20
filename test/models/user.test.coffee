@@ -20,39 +20,36 @@ describe "User model", ->
       done()
 
   it "should create a valid user", (done) ->
-    User.createUser {name: 'Jim Beam', email: 'jim@example.com', password: 'pass'}, (err, user) ->
+    User.createUser {username: 'jim', name: 'Jim Beam', email: 'jim@example.com', password: 'pass'}, (err, user) ->
       e(err).to.not.exist
       e(user.password.length).to.equal 60
       done()
 
   it "should validate unique email", (done) ->
-    User.createUser {name:'Jim Beam',email:'jim@example.com', password: 'pass'}, (err, user) ->
+    User.createUser {username: 'jim', name:'Jim Beam',email:'jim@example.com', password: 'pass'}, (err, user) ->
       e(err.errors.length).to.equal 1
       e(err.errors[0].field).to.equal 'email'
       e(err.errors[0].code).to.equal 'already_exists'
       done()
 
   it "should authenticate the user", (done) ->
-    params = {email: 'jim@example.com', password: 'pass'}
-    User.authenticate params, (err, user) ->
+    User.authenticate 'jim', 'pass', (err, user) ->
       e(err).to.not.exist
       e(user.name).to.equal 'Jim Beam'
       done()
 
   it "should authenticate the user with incorrect password", (done) ->
-    params = {email: 'jim@example.com', password: 'nogood'}
-    User.authenticate params, (err, user) ->
+    User.authenticate 'jim', 'nogood', (err, user) ->
       e(err).to.exist
       e(err.message).to.equal 'Invalid password'
       e(err.errors[0].field).to.equal 'password'
-      e(user).to.not.exist
+      e(user).to.equal false
       done()
 
-  it "should authenticate the user with incorrect email", (done) ->
-    params = {email: 'nogood@example.com', password: 'nogood'}
-    User.authenticate params, (err, user) ->
+  it "should authenticate the user with incorrect username", (done) ->
+    User.authenticate 'nogood', 'nogood', (err, user) ->
       e(err).to.exist
-      e(err.message).to.equal 'Unknown email address'
-      e(err.errors[0].field).to.equal 'email'
-      e(user).to.not.exist
+      e(err.message).to.equal 'Unknown user'
+      e(err.errors[0].field).to.equal 'username'
+      e(user).to.equal false
       done()

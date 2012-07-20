@@ -7,10 +7,12 @@ _          = require 'underscore'
 cons       = require 'consolidate'
 cheerio    = require 'cheerio'
 nct        = require 'nct'
+passport   = require 'passport'
 Backbone   = require 'backbone'
 Backbone.$ = cheerio
 
 conf       = require('./conf')()
+models     = require './models'
 client     = require './app/app'
 api        = require './api'
 
@@ -49,10 +51,15 @@ app.configure ->
   app.set 'port', process.env.PORT || 3000
   app.set 'views', __dirname + '/../templates'
   app.set 'view engine', 'nct'
+
   app.use express.favicon()
   app.use express.logger('dev')
+  app.use express.cookieParser()
   app.use express.bodyParser()
+  app.use express.session({secret: conf.sessionSecret})
   app.use express.methodOverride()
+  app.use passport.initialize()
+  app.use passport.session()
   app.use app.router
   app.use express.static(__dirname + '/../www')
 
@@ -60,7 +67,9 @@ app.configure 'development', ->
   app.use allowCrossDomain
   app.use express.errorHandler()
 
-_.each api, (routes, path) ->
+api.auth.initializePassport()
+
+_.each api.routes, (routes, path) ->
   _.each routes, (fn, method) ->
     if _.isArray(fn)
       app[method] '/api/'+path, fn...

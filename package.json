@@ -18,6 +18,8 @@
   , "mongoose": "*"
   , "nct": "*"
   , "node-uuid": "*"
+  , "passport": "*"
+  , "passport-local": "*"
   , "underscore": "*"
   , "up": "*"
   , "urlify": "*"

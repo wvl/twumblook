@@ -1,8 +1,11 @@
-u = require './users'
-e = require './entries'
 
-module.exports =
-  users:
+module.exports = api = {}
+api.users   = u    = require './users'
+api.entries = e    = require './entries'
+api.auth    = auth = require './auth'
+
+api.routes =
+  'users':
     get: u.list
     post: u.create
   'users/:username':
@@ -11,3 +14,6 @@ module.exports =
     put: [u.find, u.update]
   'users/:username/entries':
     get: [u.find, e.list]
+  'session':
+    post: auth.login
+    delete: auth.logout

@@ -43,24 +43,21 @@ UserSchema.statics.createUser = (params, callback) ->
 # authenticate email/password
 # return api error object if anything fails
 #
-UserSchema.statics.authenticate = (params, callback) ->
-  errors = utils.require(params, ['email','password'])
-  return callback({message: 'Expected email and password', errors}) if errors
-
-  @findOne {email: params.email}, (err, user) ->
-    return callback(err) if err # TODO?
+UserSchema.statics.authenticate = (username, password, callback) ->
+  @findOne {username}, (err, user) ->
+    return callback(err) if err
     unless user
       return callback({
-        message: 'Unknown email address', 
-        errors: [{field: 'email', code: 'missing', message: 'Email address not found'}]
-      })
-    bcrypt.compare params.password, user.password, (err, match) ->
+        message: 'Unknown user', 
+        errors: [{field: 'username', code: 'missing', message: 'username not found'}]
+      }, false)
+    bcrypt.compare password, user.password, (err, match) ->
       if match
         return callback(null, user)
       else
         return callback({
           message: 'Invalid password',
           errors: [{field: 'password', code: 'invalid', message: 'Invalid password'}]
-        })
+        }, false)
 
 module.exports = User = mongoose.model('User', UserSchema)

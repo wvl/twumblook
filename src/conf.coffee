@@ -12,6 +12,7 @@ configs =
     port: 3000
 
 defaults =
+  sessionSecret: 'ljkzmYzkUmtmSgDPKVpXghJnYsIMMWHcZbJcfmEotoz7GZw6Ne'
   mongoDatabase: 'twumblook'
   mongoHost: 'localhost'
 
