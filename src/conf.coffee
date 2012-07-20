@@ -6,6 +6,7 @@ configs =
 
   production:
     mongoDatabase: 'twumblook_prod'
+    port: 3000
 
   development:
     port: 3000

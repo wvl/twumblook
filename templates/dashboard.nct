@@ -1,9 +1,15 @@
-<h1>Dashboard</h1>
+<div class="page-title">
+  <a href="/"><i class="icon-chevron-left"></i> back home</a>
+  <h1>Dashboard</h1>
+</div>
 
 <div class="row">
-  <div class="span6 btn-group">
-    <button class="btn new-entry" style="font-size: 24px; color: #0f0;"><i class="icon-comment"></i> Text</button>
-    <button class="btn new-entry" style="font-size: 24px; color: #f00;"><i class="icon-link"></i> Link</button>
-    <button class="btn new-entry" style="font-size: 24px; color: #00f;"><i class="icon-camera"></i> Photo</button>
+  <div class="span6 btn-group actions">
+    <a class="btn new-entry" href="/entries/text/new"><i
+    class="icon-comment"></i> Text</a>
+    <a class="btn new-entry" href="/entries/link/new"><i
+    class="icon-link"></i> Link</a>
+    <a class="btn new-entry" href="/entries/photo/new"><i
+    class="icon-camera"></i> Photo</a>
   </div>
 </div>

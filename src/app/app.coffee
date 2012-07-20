@@ -21,19 +21,27 @@ else
   global.browser = false
   $ = null
 
+store = {}
+store.users = {}
+store.user = null
+
 loadUser = (ctx,next) ->
-  return next() if ctx.user and ctx.user.get('username')==ctx.params.user
-  console.log "Loading user: ", ctx.params.user
+  ctx.user = store.users[ctx.params.user]
+  return next() if ctx.user
   models.User.find ctx.params.user, (err, user) ->
-    if err
-      console.log "Handle user not found"
-    else
-      # console.log "Result from find: ", err, user
-      ctx.user = user if user
-      next()
+    return console.log "Handle user not found" if err
+    store.users[ctx.params.user] = ctx.user = user
+    console.log "Loaded User:", ctx.user
+    next()
 
 loadEntries = (ctx, next) ->
   ctx.user.entries.fetch({success: next})
+
+loggedIn = (ctx, next) ->
+  console.log "Logged in?", store.user
+  return next() if store.user
+  console.log "redirecting to home"
+  page.show('/')
 
 home      = (ctx) -> new views.Home({text: 'Home'})
 login     = (ctx) -> new views.Login({text: 'Login'})
@@ -46,25 +54,29 @@ show = (fn) ->
     main.show fn(ctx)
     ctx.state.callback() if ctx.state.callback
 
-page.base('/app')
+# page.base('/app')
 page '/', show(home)
 page '/login', show(login)
-page '/:user/*', loadUser
-page '/:user/dashboard', show(dashboard)
-page '/:user/profile', show(profile)
-page '/:user/blog', loadEntries, show(blog)
+page '/:user/profile', loadUser, show(profile)
+page '/:user/blog', loadUser, loadEntries, show(blog)
+page '/dashboard', loggedIn, show(dashboard)
 page '*', ->
   console.log "404 Catchall handler?"
 
-app.init = ->
+app.init = (user) ->
+  console.log "Init app"
+  store.user = new models.User(user) if user
   main = new base.RegionManager($('#app'))
   page()
-  # home = new Home({el: $('#app')})
-  console.log "Init app??"
 
-app.render = (jq, route='/', callback) ->
+app.sayHello = ->
+  console.log "Say Hello"
+
+app.render = (jq, route='/', user=null, callback) ->
   $ = jq
+  store.user = new models.User(user) if user
   main = new base.RegionManager($('#app'))
+
   timeout = setTimeout (->
     console.log("Page show timeout")
     callback(new Error("page show teimeout"))

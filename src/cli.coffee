@@ -1,9 +1,10 @@
-fs   = require 'fs'
-path = require 'path'
-c    = require 'commander'
-up    = require 'up'
-http  = require 'http'
+fs     = require 'fs'
+path   = require 'path'
+c      = require 'commander'
+up     = require 'up'
+http   = require 'http'
 moment = require 'moment'
+sockjs = require 'sockjs'
 config = require './conf'
 
 json = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 
@@ -20,12 +21,23 @@ c.option '-p --port <port>', 'Port to listen on', parseInt
 #   conf('test')
 #   require('../test/browser/server').run()
 
+sockJs = (httpServer) ->
+  sockSrv = sockjs.createServer()
+  sockSrv.on 'connection', (conn) ->
+    console.log "Open connection"
+    process.on 'SIGWINCH', ->
+      conn.write 'reload'
+
+  sockSrv.installHandlers(sockSrv, {prefix: 'sockjs'})
+
 serve = c.command 'serve'
 serve.description 'Run the server'
 serve.action ->
   conf = config(c.env)
   srv = path.join(process.cwd(),'lib','server')
-  httpServer = http.Server().listen(conf.port)
+  httpServer = http.Server()
+  # sockJs(httpServer)
+  httpServer.listen(conf.port)
   srv = up(httpServer, srv, {numWorkers: 1, workerTimeout: 1000})
   console.log "server running on http://127.0.0.1:#{conf.port} with pid: #{process.pid}"
   pidfile = path.join(process.cwd(), 'tmp','app.pid')

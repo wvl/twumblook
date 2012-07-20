@@ -1,7 +1,7 @@
 <h1>{text}</h1>
 <ul>
-<li><a href="/app/login">Login</a></li>
-<li><a href="/app/wayne/dashboard">Dashboard</a></li>
-<li><a href="/app/wayne/profile">Profile</a></li>
-<li><a href="/app/wayne/blog">Blog</a></li>
+<li><a href="/login">Login</a></li>
+<li><a href="/dashboard">Dashboard</a></li>
+<li><a href="/wayne/profile">Profile</a></li>
+<li><a href="/wayne/blog">Blog</a></li>
 </ul>

@@ -29,6 +29,7 @@
   , "requirejs": "*"
   , "sinon": "*"
   , "sinon-chai": "*"
+  , "sockjs": "*"
   , "supertest": "*"
   , "uglify-js": "*"
   }

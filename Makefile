@@ -31,12 +31,15 @@ www/js/templates.js: $(NCTCOMPILED)
 APPJS = $(shell find lib/app -name "*.js")
 REQUIREAPPJS = $(APPJS:lib/app/%.js=www/js/app/%.js)
 
-www/js/app.js: $(REQUIREAPPJS)
+www/js/app.js: $(REQUIREAPPJS) requirejs.build.js
 	$(BINDIR)/r.js -o requirejs.build.js
+	say "Done"
 
 www/js/require.js: node_modules/requirejs/require.js
 	cp node_modules/requirejs/require.js www/js/require.js
 
+www/js/sockjs-0.3.2.min.js: vendor/js/sockjs-0.3.2.min.js
+	cp vendor/js/sockjs-0.3.2.min.js www/js/sockjs-0.3.2.min.js
 
 www/js/vendor/jquery.js: vendor/js/jquery-1.7.2.min.js
 	cp $< $@
@@ -58,7 +61,7 @@ www/js/vendor/page.js: node_modules/page/build/page.js
 
 VENDORJS = jquery underscore moment backbone nct page
 VENDORJS := $(VENDORJS:%=www/js/vendor/%.js)
-JSFILES = www/js/templates.js www/js/require.js
+JSFILES = www/js/templates.js www/js/require.js www/js/sockjs-0.3.2.min.js
 
 all: $(SRCJS) $(VENDORJS) $(REQUIREAPPJS) www/css/app.css $(JSFILES)
 

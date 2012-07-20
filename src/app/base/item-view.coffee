@@ -67,7 +67,7 @@ class ItemView extends Backbone.View
     else
       @$el.attr('data-ssr', true) unless browser
       @$el.html nct.render(@template, @context())
-      console.log "rendered", @template
+      console.log "rendered", @template if browser
 
   # Render the view with nct templates
   # You can override this in your view definition.

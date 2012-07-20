@@ -2,7 +2,6 @@
 fs         = require 'fs'
 path       = require 'path'
 express    = require 'express'
-api        = require './api'
 http       = require 'http'
 _          = require 'underscore'
 cons       = require 'consolidate'
@@ -10,8 +9,10 @@ cheerio    = require 'cheerio'
 nct        = require 'nct'
 Backbone   = require 'backbone'
 Backbone.$ = cheerio
-client     = require('./app/app')
-domain     = require 'domain'
+
+conf       = require('./conf')()
+client     = require './app/app'
+api        = require './api'
 
 module.exports = app = express()
 
@@ -38,6 +39,12 @@ Backbone.sync = (method, model, options) ->
 app.engine('nct', cons.nct)
 app.engine('jade', cons.jade)
 
+# CORS middleware
+allowCrossDomain = (req, res, next) ->
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+  res.header('Access-Control-Allow-Headers', 'Content-Type')
+
 app.configure ->
   app.set 'port', process.env.PORT || 3000
   app.set 'views', __dirname + '/../templates'
@@ -50,6 +57,7 @@ app.configure ->
   app.use express.static(__dirname + '/../www')
 
 app.configure 'development', ->
+  app.use allowCrossDomain
   app.use express.errorHandler()
 
 _.each api, (routes, path) ->
@@ -59,28 +67,23 @@ _.each api, (routes, path) ->
     else
       app[method] '/api/'+path, fn
 
-app.get '/', (req,res) ->
-  res.render 'index', {pageTitle: 'Hello World', msg: "woot!", usingNct: true}
-
 nct.onLoad = (name) ->
   dir = app.get('views')
   pathname = path.join(dir, name+'.nct')
   return false unless fs.existsSync(pathname)
   fs.readFileSync pathname, 'utf8'
 
-app.get /^\/app(\/?(.*))/, (req,res) ->
-  d = domain.create()
-  layout = fs.readFileSync(path.join(__dirname, '../templates/layout.nct'), 'utf8')
-  html = nct.renderTemplate(layout, {})
-  $ = cheerio.load(html)
-  d.on 'error', (er) ->
-    console.error "Caught error on domain", er
-  d.run ->
-    client.render $, req.path.slice(4), ->
-      res.send $.html()
+layout = fs.readFileSync(path.join(__dirname, '../templates/layout.nct'), 'utf8')
 
 app.get '/jade', (req,res) ->
-  res.render 'index.jade', {pageTitle: 'Hello World', msg: "woot!", usingJade: true}
+  res.render 'test.jade', {pageTitle: 'Hello World', msg: "woot!", isJade: true}
 
 app.get '/fast', (req, res) ->
   res.send 'ok'
+
+app.get "/*", (req,res) ->
+  html = nct.renderTemplate(layout, {production: conf.env=='production'})
+  $ = cheerio.load(html)
+  client.render $, req.path, null, ->
+    res.send $.html()
+
