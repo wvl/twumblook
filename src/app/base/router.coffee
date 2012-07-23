@@ -119,7 +119,6 @@ class Router
 
   # Replace `path` with optional `state` object
   replace: (path, state, init) ->
-    console.log "replace: ", path, state, init
     ctx = new Context(path, state)
     ctx.replace = true
     ctx.init = init

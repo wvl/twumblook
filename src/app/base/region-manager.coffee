@@ -21,9 +21,4 @@ class RegionManager extends Backbone.Events
     view.onShow() if view.onShow
     # @trigger('show', view)
 
-  # close active view if present
-  close: ->
-    @currentView.close() if @currentView?.close
-    @currentView = null
-
 module.exports = RegionManager

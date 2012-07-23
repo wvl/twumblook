@@ -6,12 +6,11 @@ configs =
 
   production:
     mongoDatabase: 'twumblook_prod'
-    port: 3000
 
-  development:
-    port: 3000
+  development: {}
 
 defaults =
+  port: 3000
   sessionSecret: 'ljkzmYzkUmtmSgDPKVpXghJnYsIMMWHcZbJcfmEotoz7GZw6Ne'
   sessionTimeout: 2 * 365 * 1000 * 60 * 60 * 24  # 2 years
   mongoDatabase: 'twumblook'

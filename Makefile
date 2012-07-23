@@ -13,9 +13,18 @@ www/js/app/%.js: lib/app/%.js
 	cat $< >> $@
 	echo "\n\nreturn module.exports;\n});" >> $@
 
+INTTESTS = $(shell find test/integration -name "*.coffee")
+INTTESTSJS = $(INTTESTS:test/integration/%.coffee=www/js/test/%.js)
+
+www/js/test/%.js: test/integration/%.coffee
+	$(BINDIR)/coffee -o $(@D) -c $<
+
 LESS = $(shell find src/style -name "*.less")
 www/css/app.css: $(LESS)
 	$(BINDIR)/lessc -Ivendor/bootstrap/less src/style/app.less > $@
+
+www/css/mocha.css: node_modules/mocha/mocha.css
+	cp $< $@
 
 NCT = $(shell find templates -name "*.nct")
 NCTCOMPILED = $(NCT:templates/%.nct=lib/templates/%.js)
@@ -62,10 +71,13 @@ www/js/vendor/page.js: node_modules/page/build/page.js
 www/js/vendor/toObject.js: vendor/js/toObject.js
 	cp $< $@
 
-VENDORJS = jquery underscore moment backbone nct page toObject
+www/js/vendor/mocha.js: node_modules/mocha/mocha.js
+	cp $< $@
+
+VENDORJS = jquery underscore moment backbone nct page toObject mocha
 VENDORJS := $(VENDORJS:%=www/js/vendor/%.js)
 JSFILES = www/js/templates.js www/js/require.js www/js/sockjs-0.3.2.min.js
 
-all: $(SRCJS) $(VENDORJS) $(REQUIREAPPJS) www/css/app.css $(JSFILES)
+all: $(SRCJS) $(VENDORJS) $(REQUIREAPPJS) www/css/app.css www/css/mocha.css $(JSFILES) $(INTTESTSJS)
 
 prod: all www/js/app.js

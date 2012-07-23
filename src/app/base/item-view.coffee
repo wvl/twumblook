@@ -44,7 +44,7 @@ class ItemView extends Backbone.View
     return @setElement(@el, false) if @el
     if @id and browser
       el = $('#'+ if _.isFunction(@id) then @id() else @id)
-      return @setElement(el, false) if el.length
+      return @setElement(el, false) if el.length and el.data('ssr')
     attrs = _.extend({}, @attributes)
     attrs.id = @id if @id
     attrs.id = @id() if @id and _.isFunction(@id)

@@ -92,10 +92,20 @@ app.get '/jade', (req,res) ->
 app.get '/fast', (req, res) ->
   res.send 'ok'
 
+env =
+  production: conf.env == 'production'
+  development: conf.env == 'development'
+  test: conf.env == 'test'
+
+if conf.env == 'test'
+  app.post '/test/reset', (req, res) ->
+    models.User.remove {}, ->
+      res.send 'OK'
+
 app.get "/*", (req,res) ->
   layout = fs.readFileSync(path.join(__dirname, '../templates/layout.nct'), 'utf8')
   user = if req.user then JSON.stringify(req.user.toApi()) else ""
-  html = nct.renderTemplate(layout, {user, production: conf.env=='production'})
+  html = nct.renderTemplate(layout, {user, env})
   $ = cheerio.load(html)
   client.render $, req.path, req.user?.toApi(), ->
     res.send $.html()

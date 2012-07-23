@@ -18,6 +18,7 @@ main = null
 if (typeof window != 'undefined')
   window.browser = true
   $ = window.$
+  window.router = router
 else
   global.browser = false
   $ = null
@@ -55,9 +56,8 @@ login     = (ctx) ->
 signup    = (ctx) ->
   view = new views.auth.Signup()
   view.on 'success', (user) ->
-    console.log "Signup success"
     store.user = user
-    page('/')
+    router.show('/')
 
 profile   = (ctx) -> new views.Profile({model: ctx.user})
 blog      = (ctx) -> new views.Blog({model: ctx.user, collection: ctx.user.entries})
@@ -68,12 +68,13 @@ show = (fn) ->
     main.show fn(ctx)
     view
 
-router.page '/', show(home)
+router.page '/', home
 router.page '/login', login
 router.page '/signup', signup
 
 router.on 'show', (ctx, view) ->
   main.show view if view and view instanceof base.ItemView
+  $('body').trigger('show') if browser
 
 # page '/', show(home)
 # page '/login', show(login)
@@ -91,6 +92,7 @@ app.init = (user) ->
   store.user = new models.User(user) if user
   main = new base.RegionManager($('#app'))
   router.start()
+  $('body').trigger('show')
 
 app.sayHello = ->
   console.log "Say Hello"
