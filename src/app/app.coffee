@@ -9,7 +9,8 @@ viewModels = require './view-models'
 base.setViewModels(viewModels)
 views = require './views/index'
 models = require './models'
-page = require 'page'
+
+router = base.router()
 
 module.exports = app = {}
 main = null
@@ -65,23 +66,31 @@ dashboard = (ctx) -> new views.Dashboard({model: ctx.user})
 show = (fn) ->
   (ctx) ->
     main.show fn(ctx)
-    ctx.state.callback() if ctx.state.callback
+    view
 
-# page.base('/app')
-page '/', show(home)
-page '/login', show(login)
-page '/signup', show(signup)
-page '/:user/profile', loadUser, show(profile)
-page '/:user/blog', loadUser, loadEntries, show(blog)
-page '/dashboard', loggedIn, show(dashboard)
-page '*', ->
-  console.log "404 Catchall handler?"
+router.page '/', show(home)
+router.page '/login', login
+router.page '/signup', signup
+
+router.on 'show', (ctx, view) ->
+  main.show view if view and view instanceof base.ItemView
+
+# page '/', show(home)
+# page '/login', show(login)
+# page '/signup', show(signup)
+# page '/:user/profile', loadUser, show(profile)
+# page '/:user/blog', loadUser, loadEntries, show(blog)
+# page '/dashboard', loggedIn, show(dashboard)
+# page '*', ->
+#   console.log "404 Catchall handler?"
+
+
 
 app.init = (user) ->
   console.log "Init app", user
   store.user = new models.User(user) if user
   main = new base.RegionManager($('#app'))
-  page()
+  router.start()
 
 app.sayHello = ->
   console.log "Say Hello"
@@ -99,4 +108,4 @@ app.render = (jq, route='/', user=null, callback) ->
     clearTimeout timeout
     callback(args...)
 
-  page.show(route, {callback: cb})
+  router.show route, cb

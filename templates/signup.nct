@@ -1,6 +1,6 @@
 <div class="row">
   <div class="span5 offset3">
-    <p class="pull-right">Already have an account? <a href="login"
+    <p class="pull-right">Already have an account? <a href="/login"
     class="btn">Login</a></p>
   </div>
   <div class="span6 offset3 breathe-top">

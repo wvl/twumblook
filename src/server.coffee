@@ -85,7 +85,6 @@ nct.onLoad = (name) ->
   return false unless fs.existsSync(pathname)
   fs.readFileSync pathname, 'utf8'
 
-layout = fs.readFileSync(path.join(__dirname, '../templates/layout.nct'), 'utf8')
 
 app.get '/jade', (req,res) ->
   res.render 'test.jade', {pageTitle: 'Hello World', msg: "woot!", isJade: true}
@@ -94,6 +93,7 @@ app.get '/fast', (req, res) ->
   res.send 'ok'
 
 app.get "/*", (req,res) ->
+  layout = fs.readFileSync(path.join(__dirname, '../templates/layout.nct'), 'utf8')
   user = if req.user then JSON.stringify(req.user.toApi()) else ""
   html = nct.renderTemplate(layout, {user, production: conf.env=='production'})
   $ = cheerio.load(html)
