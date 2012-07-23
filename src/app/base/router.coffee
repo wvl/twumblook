@@ -110,19 +110,19 @@ class Router
 
     next()
 
-  start: ->
+  start: (callback) ->
     return if @running
     @running = true
-    @replace(location.pathname+location.search, null, true)
+    @replace(location.pathname+location.search, null, true, callback)
 
   stop: ->
 
   # Replace `path` with optional `state` object
-  replace: (path, state, init) ->
+  replace: (path, state, init, callback) ->
     ctx = new Context(path, state)
     ctx.replace = true
     ctx.init = init
-    @dispatch ctx
+    @dispatch ctx, callback
 
 _.extend(Router.prototype, Backbone.Events)
 

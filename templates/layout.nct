@@ -61,7 +61,9 @@
     <script src="/js/vendor/expect.js"></script>
     <script src="/js/test/auth.test.js"></script>
     <script>{no}
-      setTimeout(function(){mocha.run();}, 1000);
+      require(['./app/app'], function(app) {
+        mocha.run();
+      });
     {/no}</script>
   {/if}
 </body>

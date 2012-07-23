@@ -17,7 +17,7 @@ FormViewMixin =
   formToObject: -> @$('form').toObject()
 
   # Take xhr response, and build error object
-  handleError: (res, attrs) ->
+  _handleError: (res, attrs) ->
     if res.status == 401
       @trigger 'unauthorized'
       @error = {message: unauthorized_message}
@@ -53,8 +53,9 @@ FormViewMixin =
 
       error: (model, response, options) =>
         console.log "Handle error", model, response, options
-        @handleError(response, obj)
+        @_handleError(response, obj)
         @rerender()
+        @trigger 'error', @error
 
     if @collection
       @collection.create(obj, callbacks)

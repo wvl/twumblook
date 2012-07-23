@@ -19,11 +19,13 @@ if (typeof window != 'undefined')
   window.browser = true
   $ = window.$
   window.router = router
+  window.store = store = {}
 else
   global.browser = false
+  store = {}
   $ = null
 
-store = {}
+_.extend(store, backbone.Events)
 store.users = {}
 store.user = null
 
@@ -74,7 +76,7 @@ router.page '/signup', signup
 
 router.on 'show', (ctx, view) ->
   main.show view if view and view instanceof base.ItemView
-  $('body').trigger('show') if browser
+  store.trigger 'show' if browser
 
 # page '/', show(home)
 # page '/login', show(login)
@@ -86,13 +88,12 @@ router.on 'show', (ctx, view) ->
 #   console.log "404 Catchall handler?"
 
 
-
 app.init = (user) ->
   console.log "Init app", user
   store.user = new models.User(user) if user
   main = new base.RegionManager($('#app'))
-  router.start()
-  $('body').trigger('show')
+  router.start ->
+    store.trigger 'show'
 
 app.sayHello = ->
   console.log "Say Hello"

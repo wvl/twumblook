@@ -5,14 +5,15 @@ fa       = require 'fa'
 utils    = require './utils'
 
 exports.UserSchema = UserSchema = new mongoose.Schema({
+  username: {type: String, unique: true, required: true}
+  email: {type: String, unique: true, required: true }
   name: String
-  email: {type: String, unique: true, required: true, }
   password: String
 })
 UserSchema.plugin utils.modifiedAtPlugin
 
 UserSchema.statics.toError = (err) ->
-  utils.apiError('User',err,['email'])
+  utils.apiError('User',err,['username','email'])
 
 UserSchema.methods.toApi = ->
   doc = @toJSON()
