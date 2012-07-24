@@ -57,6 +57,9 @@ app.configure ->
 app.configure 'development', ->
   app.use express.logger('dev')
 
+app.configure 'test', ->
+  app.use express.logger('dev')
+
 app.configure ->
   app.use express.cookieParser()
   app.use express.bodyParser()

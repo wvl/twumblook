@@ -1,7 +1,7 @@
 
 fill = (fields={}) ->
   _.each fields, (val,name) ->
-    $("input[name=#{name}]").val(val)
+    $("input[name=#{name}]").val(val).trigger('change')
 
 describe "Auth Flow", ->
 

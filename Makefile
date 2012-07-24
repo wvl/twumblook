@@ -75,7 +75,11 @@ www/js/vendor/toObject.js: vendor/js/toObject.js
 www/js/vendor/mocha.js: node_modules/mocha/mocha.js
 	cp $< $@
 
+www/js/vendor/model_binder.js: vendor/js/Backbone.ModelBinder.js
+	cp $< $@
+
 VENDORJS = jquery underscore moment backbone nct page toObject mocha
+VENDORJS := $(VENDORJS) model_binder
 VENDORJS := $(VENDORJS:%=www/js/vendor/%.js)
 JSFILES = www/js/templates.js www/js/require.js www/js/sockjs-0.3.2.min.js
 

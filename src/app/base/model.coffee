@@ -17,10 +17,10 @@ class Model extends Backbone.Model
   @relations: {}
   @embeddedRelations: {}
 
-  validate: (attrs) ->
+  savable: ->
     return unless @validations
     required = _.filter (@validations.required || []), (f) =>
-      @get(f)==undefined and (!attrs[f] or attrs[f]=='')
+      @get(f)==undefined or @get(f)==''
     errors = _.map required, (field) -> {field, code: 'missing_field'}
     if errors.length then {message: "Validation Failed", errors} else null
 

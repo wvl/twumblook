@@ -12,9 +12,9 @@ class models.User extends base.Model
   validations:
     required: ['username','name','email']
 
-  validate: (attrs) ->
+  savable: ->
     e = super || {message: 'Validation Failed', errors: []}
-    if @isNew() and !attrs._id and !attrs.password
+    if @isNew() and !@get('password')
       e.errors.push({field: 'password', code: 'missing_field'})
 
     if e.errors.length then e else null

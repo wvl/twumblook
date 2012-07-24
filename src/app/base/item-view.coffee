@@ -1,6 +1,7 @@
 Backbone = require 'backbone'
 _ = require 'underscore'
 nct      = require 'nct'
+require 'model_binder' if typeof window != 'undefined'
 
 # A single item view implementation that contains code for rendering
 # and calling several methods on extended views, such as `onRender`.
@@ -10,6 +11,7 @@ class ItemView extends Backbone.View
     @template ?= @options.template
     @namespace = @options.namespace if @options.namespace
     @workflow ?= @options.workflow || {}
+    @binder = new Backbone.ModelBinder() if browser
     unless @template
       name = _.underscored(@constructor.name)
       @template = if @namespace then @namespace + '/' + name else name

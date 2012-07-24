@@ -17,7 +17,7 @@ FormViewMixin =
   formToObject: -> @$('form').toObject()
 
   # Take xhr response, and build error object
-  _handleError: (res, attrs) ->
+  _handleError: (res) ->
     if res.status == 401
       @trigger 'unauthorized'
       @error = {message: unauthorized_message}
@@ -38,29 +38,30 @@ FormViewMixin =
       @error = res
 
     @error.message ?= "Error"
-    @error.attrs = attrs
+
+  onRender: ->
+    @binder.bind @model, @$el if browser
 
   handleFormSubmit: (e) ->
     e.preventDefault()
 
-    obj = @formToObject()
-
     callbacks =
-      wait: true
-
       success: (model, resp) =>
         @trigger 'success', @model
 
       error: (model, response, options) =>
+        @_handleError(response)
         console.log "Handle error", model, response, options
-        @_handleError(response, obj)
         @rerender()
         @trigger 'error', @error
 
+    @error = @model.savable()
+    return @rerender() if @error
+
     if @collection
-      @collection.create(obj, callbacks)
+      @collection.create({}, callbacks)
     else
-      @model.save(obj, callbacks)
+      @model.save({}, callbacks)
 
 _.extend FormView.prototype, FormViewMixin
 
