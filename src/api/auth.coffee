@@ -22,7 +22,7 @@ api.login = (req,res,next) ->
     return res.send info, 422 if user==false
 
     req.logIn user, ->
-    res.send user
+    res.send {user: user}
 
   ))(req,res,next)
 
@@ -33,4 +33,4 @@ api.logout = (req, res) ->
   res.send {}
 
 api.session = (req, res) ->
-  res.send req.user
+  res.send {user: req.user}

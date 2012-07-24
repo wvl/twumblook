@@ -3,14 +3,17 @@ _ = require 'underscore'
 configs =
   test:
     mongoDatabase: 'twumblook_test'
+    port: 3405
 
   production:
+    port: 3410
     mongoDatabase: 'twumblook_prod'
 
-  development: {}
+  development:
+    port: 3400
+
 
 defaults =
-  port: 3000
   sessionSecret: 'ljkzmYzkUmtmSgDPKVpXghJnYsIMMWHcZbJcfmEotoz7GZw6Ne'
   sessionTimeout: 2 * 365 * 1000 * 60 * 60 * 24  # 2 years
   mongoDatabase: 'twumblook'

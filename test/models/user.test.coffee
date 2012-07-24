@@ -13,10 +13,11 @@ describe "User model", ->
     user.validate (err) ->
       e(err).to.exist
       errors = User.toError(err).errors
-      e(errors.length).to.equal 1
+      e(errors.length).to.equal 2
       e(_.pluck(errors,'resource')).to.include 'User'
       e(_.pluck(errors,'field')).to.include 'email'
-      e(_.pluck(errors,'code')).to.eql ['missing_field']
+      e(_.pluck(errors,'field')).to.include 'username'
+      e(_.pluck(errors,'code')).to.eql ['missing_field','missing_field']
       done()
 
   it "should create a valid user", (done) ->
@@ -27,9 +28,11 @@ describe "User model", ->
 
   it "should validate unique email", (done) ->
     User.createUser {username: 'jim', name:'Jim Beam',email:'jim@example.com', password: 'pass'}, (err, user) ->
-      e(err.errors.length).to.equal 1
-      e(err.errors[0].field).to.equal 'email'
+      e(err.errors.length).to.equal 2
+      e(err.errors[0].field).to.equal 'username'
       e(err.errors[0].code).to.equal 'already_exists'
+      e(err.errors[1].field).to.equal 'email'
+      e(err.errors[1].code).to.equal 'already_exists'
       done()
 
   it "should authenticate the user", (done) ->

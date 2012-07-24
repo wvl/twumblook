@@ -6,6 +6,9 @@ module.exports = vm = {}
 class vm.User extends base.ViewModel
   @attrs ['username','name','email','password']
 
+class vm.Session extends base.ViewModel
+  @attrs ['username','password']
+
 class vm.Entry extends base.ViewModel
   @attrs ['title','text']
 

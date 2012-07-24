@@ -4,6 +4,7 @@ fill = (fields={}) ->
     $("input[name=#{name}]").val(val)
 
 describe "Auth Flow", ->
+
   before (success) ->
     $.post '/test/reset', {success}
 
@@ -14,6 +15,8 @@ describe "Auth Flow", ->
       $('button').trigger('submit')
       expect($('div.error').length).to.equal 4
       expect($('div.alert').text().trim()).to.equal 'Validation Failed'
+      expect($("a[href='/settings']").length).to.equal 0
+      expect($("a[href='/login']").length).to.equal 2
       done()
     window.router.show('/signup')
 
@@ -28,6 +31,7 @@ describe "Auth Flow", ->
     fill {email: 'wayne@larsen.st', password: 'password'}
     window.store.on 'show', ->
       expect(location.pathname).to.equal '/'
+      expect($("a[href='/profile']").text()).to.equal 'wvl'
       done()
     $('button').trigger('submit')
 

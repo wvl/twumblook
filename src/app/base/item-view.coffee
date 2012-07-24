@@ -9,7 +9,7 @@ class ItemView extends Backbone.View
     super
     @template ?= @options.template
     @namespace = @options.namespace if @options.namespace
-    @workflow ?= @options.workflow
+    @workflow ?= @options.workflow || {}
     unless @template
       name = _.underscored(@constructor.name)
       @template = if @namespace then @namespace + '/' + name else name

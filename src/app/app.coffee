@@ -15,19 +15,27 @@ router = base.router()
 module.exports = app = {}
 main = null
 
+class Store
+  constructor: ->
+    @users = {}
+    @user = null
+
+  set: (name, value) ->
+    @[name] = value
+    @trigger 'set', name, value
+    @trigger 'set:'+name, value
+
+_.extend Store.prototype, backbone.Events
+
 if (typeof window != 'undefined')
   window.browser = true
   $ = window.$
   window.router = router
-  window.store = store = {}
+  window.store = store = new Store()
 else
   global.browser = false
-  store = {}
+  store = new Store()
   $ = null
-
-_.extend(store, backbone.Events)
-store.users = {}
-store.user = null
 
 loadUser = (ctx,next) ->
   ctx.user = store.users[ctx.params.user]
@@ -51,15 +59,11 @@ home      = (ctx) -> new views.Home({text: 'Home'})
 
 login     = (ctx) ->
   view = new views.auth.Login()
-  view.on 'success', (session) ->
-    store.user = session.user
-    page('/')
+  view.on 'success', -> router.show('/')
 
 signup    = (ctx) ->
   view = new views.auth.Signup()
-  view.on 'success', (user) ->
-    store.user = user
-    router.show('/')
+  view.on 'success', (user) -> router.show('/')
 
 profile   = (ctx) -> new views.Profile({model: ctx.user})
 blog      = (ctx) -> new views.Blog({model: ctx.user, collection: ctx.user.entries})
@@ -87,27 +91,26 @@ router.on 'show', (ctx, view) ->
 # page '*', ->
 #   console.log "404 Catchall handler?"
 
+buildApp = (user) ->
+  store.set 'user', new models.User(user)
+  topnav = new views.chrome.TopNav({el: $('#topnav'), model: store.user}).render()
+  topnav.on 'logout', ->
+    router.show '/'
+  main = new base.RegionManager($('#app'))
 
 app.init = (user) ->
-  console.log "Init app", user
-  store.user = new models.User(user) if user
-  main = new base.RegionManager($('#app'))
+  buildApp(user)
   router.start ->
     store.trigger 'show'
 
-app.sayHello = ->
-  console.log "Say Hello"
-
 app.render = (jq, route='/', user=null, callback) ->
   $ = jq
-  store.user = new models.User(user) if user
-  main = new base.RegionManager($('#app'))
-
+  buildApp(user)
   timeout = setTimeout (->
-    console.log("Page show timeout")
-    callback(new Error("page show teimeout"))
+    callback(new Error("page show timeout"))
   ), 2000
   cb = (args...) ->
+    $('#app').attr('ssr', true)
     clearTimeout timeout
     callback(args...)
 

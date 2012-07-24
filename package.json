@@ -35,7 +35,7 @@
   , "uglify-js": "*"
   }
 , "scripts":
-  { "test": "mocha --compilers coffee:coffee-script test/*.test.coffee test/**/*.test.coffee"
+  { "test": "mocha --compilers coffee:coffee-script test/base/*.test.coffee test/models/*.test.coffee test/api/*.test.coffee"
   , "watch": "./node_modules/.bin/coffee -w -b -c -o lib/ src/"
   , "compile": "./node_modules/.bin/coffee -b -c -o lib/ src/"
   }

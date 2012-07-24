@@ -1,0 +1,22 @@
+<div class="navbar topnav">
+  <div class="navbar-inner">
+    <a class="brand" href="/">twumblook</a>
+    <ul class="nav mainnav">
+      <li class=""><a href="/dashboard">Dashboard</a></li>
+    </ul>
+    <ul class="nav usernav pull-right">
+      {if username}
+      <li class=""><a href=""><i class="icon-envelope"></i> 2</a></li>
+      <li class=""><a href="/settings"><i class="icon-cog"></i></a></li>
+      <li class=""><a href="/profile" class="profile"><i class="icon-user"></i>{username}</a></li>
+      <li class=""><a href="" class="logout" title="Logout"><i class="icon-off"></i></a></li>
+      {else}
+      <li class=""><a href="/login">Log in</a></li>
+      <li class=""><a href="/signup">Sign up</a></li>
+      {/if}
+    </ul>
+    <form class="navbar-search pull-right">
+      <input type="text" class="search-query" placeholder="Search">
+    </form>
+  </div>
+</div>

@@ -10,6 +10,7 @@ nct        = require 'nct'
 passport   = require 'passport'
 Backbone   = require 'backbone'
 Backbone.$ = cheerio
+bCapServer = require 'buster-capture-server'
 
 conf       = require('./conf')()
 models     = require './models'
@@ -102,11 +103,18 @@ if conf.env == 'test'
     models.User.remove {}, ->
       res.send 'OK'
 
+  # buster = bCapServer.createServer()
+  # buster.attach(app)
+
+
 app.get "/*", (req,res) ->
   layout = fs.readFileSync(path.join(__dirname, '../templates/layout.nct'), 'utf8')
   user = if req.user then JSON.stringify(req.user.toApi()) else ""
   html = nct.renderTemplate(layout, {user, env})
-  $ = cheerio.load(html)
-  client.render $, req.path, req.user?.toApi(), ->
-    res.send $.html()
+  if true
+    res.send html
+  else
+    $ = cheerio.load(html)
+    client.render $, req.path, req.user?.toApi(), ->
+      res.send $.html()
 

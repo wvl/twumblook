@@ -24,7 +24,7 @@ describe "Auth API", ->
     models.User.remove {}, done
 
   it "should return null session when not logged in", (done) ->
-    get('session').expect(200).expect('').end ok(done)
+    get('session').expect(200).expect({}).end ok(done)
 
   it "should create a user", (done) ->
     post('users').send(@user).expect(200).end ok(done)
@@ -33,8 +33,8 @@ describe "Auth API", ->
     req = post('session').send({username: 'wvl', password: 'pass'})
     req.expect(200).end (err, res) =>
       e(err).to.not.exist
-      e(res.body.username).to.equal 'wvl'
-      e(res.body.password).to.not.exist
+      e(res.body.user.username).to.equal 'wvl'
+      e(res.body.user.password).to.not.exist
       @cookie = res.header['set-cookie']
       done()
     
@@ -54,5 +54,5 @@ describe "Auth API", ->
 
   it "should return an authenticated user with session cookie", (done) ->
     get('session').set('Cookie', @cookie).end (err, res) ->
-      e(res.body.username).to.equal 'wvl'
+      e(res.body.user.username).to.equal 'wvl'
       done()
