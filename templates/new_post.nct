@@ -1,0 +1,37 @@
+
+<div class="page-title">
+  <h1>New Post</h1>
+</div>
+
+<div class="row breathe-top">
+  <div class="span6">
+    <form class='signup form-vertical'>
+    <fieldset>
+      {if error}
+      <div class="alert">
+        { error.message }
+      </div>
+      {/if}
+
+      <div class="control-group {error.title}">
+        <label class="control-label" for="title">Title</label>
+        <div class="controls">
+          <input class="xlarge span6" name="title" type="text" value="{title}">
+          {if error.title}
+            <span class="help-inline">{error.title_message}</span>
+          {/if}
+        </div>
+      </div>
+      <div class="control-group {error.text}">
+        <label class="control-label" for="text">Text</label>
+        <div class="controls">
+          <textarea class="span6" rows="10">{text}</textarea>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Create Post</button>
+      </div>
+    </fieldset>
+    </form>
+  </div>
+</div>

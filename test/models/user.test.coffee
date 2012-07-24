@@ -21,13 +21,13 @@ describe "User model", ->
       done()
 
   it "should create a valid user", (done) ->
-    User.createUser {username: 'jim', name: 'Jim Beam', email: 'jim@example.com', password: 'pass'}, (err, user) ->
+    User.beget {username: 'jim', name: 'Jim Beam', email: 'jim@example.com', password: 'pass'}, (err, user) ->
       e(err).to.not.exist
       e(user.password.length).to.equal 60
       done()
 
   it "should validate unique email", (done) ->
-    User.createUser {username: 'jim', name:'Jim Beam',email:'jim@example.com', password: 'pass'}, (err, user) ->
+    User.beget {username: 'jim', name:'Jim Beam',email:'jim@example.com', password: 'pass'}, (err, user) ->
       e(err.errors.length).to.equal 2
       e(err.errors[0].field).to.equal 'username'
       e(err.errors[0].code).to.equal 'already_exists'

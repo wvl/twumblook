@@ -9,8 +9,7 @@ viewModels = require './view-models'
 base.setViewModels(viewModels)
 views = require './views/index'
 models = require './models'
-
-router = base.router()
+routes = require './routes'
 
 module.exports = app = {}
 main = null
@@ -18,6 +17,7 @@ main = null
 class Store
   constructor: ->
     @users = {}
+    @entries = {}
     @user = null
 
   set: (name, value) ->
@@ -30,53 +30,26 @@ _.extend Store.prototype, backbone.Events
 if (typeof window != 'undefined')
   window.browser = true
   $ = window.$
-  window.router = router
+  window.router = router = base.router()
   window.store = store = new Store()
 else
   global.browser = false
-  store = new Store()
+  global.router = router = base.router()
+  global.store = store = new Store()
   $ = null
 
-loadUser = (ctx,next) ->
-  ctx.user = store.users[ctx.params.user]
-  return next() if ctx.user
-  models.User.find ctx.params.user, (err, user) ->
-    return console.log "Handle user not found" if err
-    store.users[ctx.params.user] = ctx.user = user
-    console.log "Loaded User:", ctx.user
-    next()
 
-loadEntries = (ctx, next) ->
-  ctx.user.entries.fetch({success: next})
 
-loggedIn = (ctx, next) ->
-  console.log "Logged in?", store.user
-  return next() if store.user
-  console.log "redirecting to home"
-  page.show('/')
+{blog,user} = routes
 
-home      = (ctx) -> new views.Home({text: 'Home'})
-
-login     = (ctx) ->
-  view = new views.auth.Login()
-  view.on 'success', -> router.show('/')
-
-signup    = (ctx) ->
-  view = new views.auth.Signup()
-  view.on 'success', (user) -> router.show('/')
-
-profile   = (ctx) -> new views.Profile({model: ctx.user})
-blog      = (ctx) -> new views.Blog({model: ctx.user, collection: ctx.user.entries})
-dashboard = (ctx) -> new views.Dashboard({model: ctx.user})
-
-show = (fn) ->
-  (ctx) ->
-    main.show fn(ctx)
-    view
-
-router.page '/', home
-router.page '/login', login
-router.page '/signup', signup
+router.page '/', user.home
+router.page '/login', user.login
+router.page '/signup', user.signup
+router.page '/dashboard/*', user.loggedIn
+router.page '/dashboard', blog.dashboard
+router.page '/dashboard/text', blog.newpost
+router.page '/dashboard/link', blog.newlink
+# router.page '/:username/:id', user.find, blog.find, blog.entry
 
 router.on 'show', (ctx, view) ->
   main.show view if view and view instanceof base.ItemView
@@ -92,7 +65,7 @@ router.on 'show', (ctx, view) ->
 #   console.log "404 Catchall handler?"
 
 buildApp = (user) ->
-  store.set 'user', new models.User(user)
+  store.set 'user', new models.User(user) if user
   topnav = new views.chrome.TopNav({el: $('#topnav'), model: store.user}).render()
   topnav.on 'logout', ->
     router.show '/'

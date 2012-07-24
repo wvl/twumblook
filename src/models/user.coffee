@@ -27,7 +27,7 @@ UserSchema.methods.setPassword = (password, callback) ->
       @password = hashed unless err
       callback(err, hashed)
 
-UserSchema.statics.createUser = (params, callback) ->
+UserSchema.statics.beget = (params, callback) ->
   delete params.password_confirm
   errors = utils.require(params, ['name','email','password'])
   return callback({message: 'Missing field', errors}) if errors

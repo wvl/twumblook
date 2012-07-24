@@ -18,3 +18,12 @@ api.routes =
     get: auth.session
     post: auth.login
     delete: auth.logout
+
+  # Blog api:
+  'entries':
+    get: e.list
+    post: [auth.loggedIn, e.create]
+  'entries/:id':
+    get: e.get
+    put: e.update
+    delete: e.delete

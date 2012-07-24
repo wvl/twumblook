@@ -14,7 +14,7 @@ api.list = (req, res) ->
   res.send []
 
 api.create = (req, res) ->
-  User.createUser req.body, (err, user) ->
+  User.beget req.body, (err, user) ->
     return res.send(err, 422) if err
     res.send user
 

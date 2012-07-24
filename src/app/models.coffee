@@ -1,13 +1,13 @@
 
 base = require './base/index'
-collections = require './collections'
 
 module.exports = models = {}
+models.collections = collections = {}
 
 class models.User extends base.Model
   urlRoot: '/api/users'
-  @relations:
-    entries: collections.Entries
+  # @relations:
+  #   entries: collections.Entries
 
   validations:
     required: ['username','name','email']
@@ -27,3 +27,16 @@ class models.Session extends base.Model
   @relations:
     user: models.User
 
+class models.Entry extends base.Model
+  urlRoot: '/api/entries'
+
+class models.Link extends models.Entry
+class models.Post extends models.Entry
+
+class collections.Entries extends base.Collection
+  urlRoot: '/api/entries'
+  model: (attrs, options) ->
+    switch attrs.type
+      when 'link' then new models.Link(attrs, options)
+      when 'post' then new models.Post(attrs, options)
+      else new models.Entry(attrs, options)

@@ -1,13 +1,26 @@
-
+models = require '../models'
 base = require '../base/index'
+module.exports = blog = {}
 
-class BlogItem extends base.ItemView
+class blog.BlogItem extends base.ItemView
   tagName: 'li'
   initialize: ->
     @template = _.underscored(@model.constructor.name)
 
-class Blog extends base.CollectionView
-  itemView: BlogItem
+class blog.Blog extends base.CollectionView
+  itemView: blog.BlogItem
   appendHtml: (el, html) -> @$('ul.entries').append(html)
 
-module.exports = Blog
+class blog.Dashboard extends base.ItemView
+
+class blog.NewLink extends base.FormView
+
+class blog.Entry extends base.ItemView
+
+class blog.NewPost extends base.FormView
+  initialize: ->
+    @model ?= new models.Post()
+
+  events:
+    'submit': 'handleFormSubmit'
+

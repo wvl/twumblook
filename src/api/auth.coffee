@@ -6,8 +6,8 @@ local      = require 'passport-local'
 module.exports = api = {}
 
 api.initializePassport = ->
-  passport.serializeUser (user, done) -> done(null, user._id)
-  passport.deserializeUser (id, done) -> User.findById id, done
+  passport.serializeUser (user, done) -> done(null, user.username)
+  passport.deserializeUser (username, done) -> User.findOne {username}, done
 
   passport.use new local.Strategy (username, password, done) ->
     User.authenticate username, password, (err, user) ->
@@ -26,7 +26,6 @@ api.login = (req,res,next) ->
 
   ))(req,res,next)
 
-
 # logout
 api.logout = (req, res) ->
   req.logOut()
@@ -34,3 +33,7 @@ api.logout = (req, res) ->
 
 api.session = (req, res) ->
   res.send {user: req.user}
+
+api.loggedIn = (req,res,next) ->
+  return res.send 401 unless req.user
+  next()

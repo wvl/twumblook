@@ -5,9 +5,9 @@
 
 <div class="row">
   <div class="span6 btn-group actions">
-    <a class="btn new-entry" href="/entries/text/new"><i
+    <a class="btn new-entry" href="/dashboard/text"><i
     class="icon-comment"></i> Text</a>
-    <a class="btn new-entry" href="/entries/link/new"><i
+    <a class="btn new-entry" href="/dashboard/link"><i
     class="icon-link"></i> Link</a>
     <a class="btn new-entry" href="/entries/photo/new"><i
     class="icon-camera"></i> Photo</a>

@@ -37,7 +37,7 @@ describe "Auth API", ->
       e(res.body.user.password).to.not.exist
       @cookie = res.header['set-cookie']
       done()
-    
+
   it "should return unknown user", (done) ->
     req = post('session').send({username: 'unknown', password: 'pass'})
     req.expect(422).end (err, res) ->
