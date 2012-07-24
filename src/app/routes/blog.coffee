@@ -1,6 +1,6 @@
 module.exports = blog = {}
 models = require '../models'
-views = require '../views/index'
+views = require '../views'
 
 blog.find = (ctx, next) ->
   return next() if store.entries[ctx.params.id]

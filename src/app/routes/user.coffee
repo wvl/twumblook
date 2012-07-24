@@ -1,7 +1,7 @@
 
 module.exports = user = {}
 models = require '../models'
-views = require '../views/index'
+views = require '../views'
 
 user.loadUser = (ctx,next) ->
   ctx.user = store.users[ctx.params.user]

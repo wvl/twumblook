@@ -7,7 +7,7 @@ backbone = require 'backbone'
 base = require './base/index'
 viewModels = require './view-models'
 base.setViewModels(viewModels)
-views = require './views/index'
+views = require './views'
 models = require './models'
 routes = require './routes'
 
