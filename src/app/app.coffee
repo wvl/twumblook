@@ -80,7 +80,7 @@ router.page '/signup', signup
 
 router.on 'show', (ctx, view) ->
   main.show view if view and view instanceof base.ItemView
-  store.trigger 'show' if browser
+  store.trigger 'show', ctx, view if browser
 
 # page '/', show(home)
 # page '/login', show(login)

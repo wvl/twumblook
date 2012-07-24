@@ -6,7 +6,8 @@ SRCJS = $(SRC:src/%.coffee=lib/%.js)
 lib/%.js: src/%.coffee
 	rm -f $@
 	$(BINDIR)/coffee -b -o $(@D) -c $<
-	cat ./tmp/app.pid | xargs kill -s SIGUSR2
+	cat ./tmp/app.test.pid 2>/dev/null | xargs kill -s SIGUSR2 2>/dev/null | true
+	cat ./tmp/app.development.pid 2>/dev/null | xargs kill -s SIGUSR2 2>/dev/null | true
 
 www/js/app/%.js: lib/app/%.js
 	echo "define(function (require,exports,module) {\n" > $@

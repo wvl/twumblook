@@ -32,8 +32,28 @@ describe "Auth Flow", ->
     window.store.on 'show', ->
       expect(location.pathname).to.equal '/'
       expect($("a[href='/profile']").text()).to.equal 'wvl'
+      expect($("a.logout").length).to.equal 1
       done()
     $('button').trigger('submit')
+
+  it "should logout", (done) ->
+    window.store.on 'show', ->
+      expect(location.pathname).to.equal '/'
+      done()
+    $('a.logout').trigger('click')
+
+  it "should login", (done) ->
+    window.store.on 'show', (ctx) ->
+      if ctx.path=='/login'
+        fill {username: 'wvl', password: 'password'}
+        $('button').trigger('submit')
+      else
+        expect(ctx.path).to.equal '/'
+        expect($("a[href='/profile']").text()).to.equal 'wvl'
+        done()
+
+    router.show('/login')
+
 
   it "should not allow duplicate usernames", (done) ->
     window.router.show '/signup', (err, view) ->

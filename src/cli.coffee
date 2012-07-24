@@ -40,12 +40,13 @@ serve.action ->
   httpServer.listen(conf.port)
   srv = up(httpServer, srv, {numWorkers: 1, workerTimeout: 1000})
   console.log "server running on http://127.0.0.1:#{conf.port} with pid: #{process.pid}"
-  pidfile = path.join(process.cwd(), 'tmp','app.pid')
+  pidfile = path.join(process.cwd(), 'tmp',"app.#{conf.env}.pid")
   fs.writeFile pidfile, process.pid, (err) ->
     console.error "Error writing pidfile: #{pidfile}" if err
   process.on 'SIGUSR2', ->
-    console.log "Reloading Server: ", moment().format("dddd, h:mm:ss a")
+    console.log "Reloading Server (#{conf.env}): ", moment().format("dddd, h:mm:ss a")
     srv.reload()
+
 
   # api.listen nconf.get('port')
 
