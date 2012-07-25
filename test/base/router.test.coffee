@@ -1,24 +1,24 @@
 
-{Route,Router,Context,router} = require '../../lib/app/base/router'
+Router = require '../../lib/app/base/router'
 e = require('chai').expect
 
-route = (path, fns...) -> new Route(path, fns...)
+# route = (path, fns...) -> new Route(path, fns...)
 
-describe "Route", ->
-  it "should match a static route", ->
-    e(route('/').match('/')).to.equal true
+# describe "Route", ->
+#   it "should match a static route", ->
+#     e(route('/').match('/')).to.equal true
 
-  it "should match a path param", ->
-    e(route('/:name').match('/john').name).to.equal 'john'
-    params = route('/user/:name/:action').match('/user/john/sings')
-    e(params.name).to.equal 'john'
-    e(params.action).to.equal 'sings'
+#   it "should match a path param", ->
+#     e(route('/:name').match('/john').name).to.equal 'john'
+#     params = route('/user/:name/:action').match('/user/john/sings')
+#     e(params.name).to.equal 'john'
+#     e(params.action).to.equal 'sings'
 
-  it "should set the default querystring to ''"
-  it "should expose the query string"
-  it "pathname: should set"
-  it "pathname: should be without querystring"
-  it "dispatcher: should ignore querystrings"
+#   it "should set the default querystring to ''"
+#   it "should expose the query string"
+#   it "pathname: should set"
+#   it "pathname: should be without querystring"
+#   it "dispatcher: should ignore querystrings"
 
 describe "Router", ->
   first = (ctx, next) ->
@@ -26,18 +26,16 @@ describe "Router", ->
     setTimeout next, 1
 
   it "should invoke a callback", (done) ->
-    router().page('/', -> done()).show('/')
+    new Router().page('/', -> done()).show('/')
 
   it "should populate ctx.params", (done) ->
-    router().page '/post/:slug', (ctx) ->
+    r = new Router().page '/post/:slug', (ctx) ->
       e(ctx.params.slug).to.equal 'one'
       done()
-    router().show '/post/one'
+    r.show '/post/one'
 
   it "should invoke multiple callbacks", (done) ->
-    r = new Router()
-
-    r.page '/multiple', first, (ctx) ->
+    r = new Router().page '/multiple', first, (ctx) ->
       e(ctx.first).to.equal true
       ctx.first = false
 
@@ -49,8 +47,7 @@ describe "Router", ->
     r.show '/multiple'
 
   it "show should also return callback", (done) ->
-    r = new Router()
-    r.page '/multiple', first, ->
+    r = new Router().page '/multiple', first, ->
     r.show '/multiple', done
 
   it "should not follow the chain when error returned", (done) ->
@@ -66,18 +63,6 @@ describe "Router", ->
     r.show '/witherror'
 
 
-  it "should invoke multiple matching routes", (done) ->
-    r = new Router()
-    r.page '/users/:username/*', (ctx, next) ->
-      ctx.user = ctx.params.username
-      next()
-
-    r.page '/users/:username', (ctx) ->
-      e(ctx.user) == 'wvl'
-      done()
-
-    r.show '/users/wvl'
-
   it "should emit unhandled if no matching routes", (done) ->
     r = new Router()
     r.on 'unhandled', (ctx) ->
@@ -85,8 +70,90 @@ describe "Router", ->
       done()
 
     r.show '/unhandled'
-      # (path, ctx, result) ->
-      # e(path).to.equal '/unhandled'
+
+describe "Mounted router", ->
+  it "should allow a router to be mounted at a fixed base", (done) ->
+    r = new Router()
+    r.mount('/user').page '/show', (ctx) ->
+      done()
+    r.show '/user/show'
+
+  it "should allow a router to be mounted with index page", (done) ->
+    r = new Router()
+    called = 0
+    r.mount('/user').page '', (ctx) ->
+      called += 1
+
+    r.show '/user', ->
+      r.show '/user/', (err, result, ctx) ->
+        e(called).to.equal 2
+        done()
+
+  it "should run a mounted routers functions first", (done) ->
+    r = new Router()
+    user = r.mount '/user', (ctx,next) ->
+      ctx.user = true
+      next()
+
+    user.page '/show', (ctx) ->
+      e(ctx.user).to.equal true
+      'OK'
+
+    r.show '/user/show', (err, result) ->
+      e(result).to.equal 'OK'
+      done()
+
+  it "multiple nested routers", (done) ->
+    r = new Router()
+    user = r.mount '/user', (ctx,next) ->
+      ctx.user = true
+      next()
+    dashboard = user.mount '/dashboard', (ctx, next) ->
+      ctx.dashboard = true
+      next()
+    dashboard.page '/show', (ctx) ->
+      e(ctx.user).to.equal true
+      e(ctx.dashboard).to.equal true
+      'OK'
+    r.show '/user/dashboard/show', (err, result) ->
+      e(result).to.equal 'OK'
+      done()
+
+  it "should set up params with multiple routers", (done) ->
+    r = new Router()
+    user = r.mount '/:user', (ctx,next) ->
+      ctx.user = ctx.params.user
+      next()
+    user.page '/:id', (ctx) ->
+      e(ctx.user).to.equal 'wvl'
+      e(ctx.params.id).to.equal 'show'
+      'OK'
+    r.on 'show', (ctx, result) ->
+      ctx.show = true
+    r.show '/wvl/show', (err, result, ctx) ->
+      e(err).to.not.exist
+      e(result).to.equal 'OK'
+      e(ctx.show).to.equal true
+      done()
+
+  it "should run base routers page first", (done) ->
+    r = new Router()
+    user = r.mount '/user', (ctx, next) ->
+      next()
+    user.page '/show', (ctx) ->
+      throw new Error("Should not be called")
+    r.page '/user/show', (ctx) -> done()
+    r.show '/user/show'
+
+
+    # public = router()
+    # public.page 'login'
+    # public.page 'logout'
+    # public.page 'signup'
+    # dashboard = router 'dashboard', users.loggedIn
+    # settings = router 'settings', users.loggedIn
+    # profiles = router ':username', users.find
+    # router().mount 'dashboard', 
 
 
 # describe "Router", ->

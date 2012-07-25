@@ -12,8 +12,7 @@ base.FormViewMixin  = formView.FormViewMixin
 base.CollectionView = require './collection-view'
 base.RegionManager  = require './region-manager'
 
-base.routerModule   = require('./router')
-base.router         = base.routerModule.router
+base.Router         = require('./router')
 
 base.setViewModels = (viewModels) ->
   base.ItemView.viewModels = viewModels

@@ -14,7 +14,7 @@ routes = require './routes'
 module.exports = app = {}
 main = null
 
-base.routerModule.canNavigateAway = (href) ->
+base.Router.canNavigateAway = (href) ->
   main.canNavigateAway(href)
 
 class Store
@@ -36,11 +36,11 @@ if (typeof window != 'undefined')
   require 'wysihtml'
   window.browser = true
   $ = window.$
-  window.router = router = base.router()
+  window.router = router = new base.Router()
   window.store = store = new Store()
 else
   global.browser = false
-  global.router = router = base.router()
+  global.router = router = new base.Router()
   global.store = store = new Store()
   $ = null
 
@@ -51,10 +51,12 @@ else
 router.page '/', user.home
 router.page '/login', user.login
 router.page '/signup', user.signup
-router.page '/dashboard/*', user.loggedIn
-router.page '/dashboard', user.loggedIn, blog.dashboard
-router.page '/dashboard/text', blog.newpost
-router.page '/dashboard/link', blog.newlink
+
+dashboard = router.mount '/dashboard', user.loggedIn
+dashboard.page '', blog.dashboard
+dashboard.page '/text', blog.newpost
+dashboard.page '/link', blog.newlink
+
 router.page '/blog/:username', user.find, blog.list
 router.page '/blog/:username/:id', user.find, blog.find, blog.entry
 
