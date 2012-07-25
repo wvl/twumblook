@@ -9,7 +9,7 @@ api.routes =
     get: u.list
     post: u.create
   'users/:username':
-    get: [u.find, u.get]
+    get: u.get
     delete: [u.find, u.delete]
     put: [u.find, u.update]
   'users/:username/entries':

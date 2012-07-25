@@ -81,8 +81,17 @@ www/js/vendor/model_binder.js: vendor/js/Backbone.ModelBinder.js
 VENDORJS = jquery underscore moment backbone nct page toObject mocha
 VENDORJS := $(VENDORJS) model_binder
 VENDORJS := $(VENDORJS:%=www/js/vendor/%.js)
+
+#BJS = tab dropdown modal tooltip popover collapse button datepicker scrollspy
+BJS = modal
+VENDORBJS = $(BJS:%=www/js/vendor/bootstrap-%.js)
+# BJS := $(BJS:%=vendor/bootstrap/js/bootstrap-%.js)
+
+www/js/vendor/bootstrap-%.js: vendor/bootstrap/js/bootstrap-%.js
+	cp $< $@
+
 JSFILES = www/js/templates.js www/js/require.js www/js/sockjs-0.3.2.min.js
 
-all: $(SRCJS) $(VENDORJS) $(REQUIREAPPJS) www/css/app.css www/css/mocha.css $(JSFILES) $(INTTESTSJS)
+all: $(SRCJS) $(VENDORJS) $(VENDORBJS) $(REQUIREAPPJS) www/css/app.css www/css/mocha.css $(JSFILES) $(INTTESTSJS)
 
 prod: all www/js/app.js

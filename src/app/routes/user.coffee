@@ -3,12 +3,12 @@ module.exports = user = {}
 models = require '../models'
 views = require '../views'
 
-user.loadUser = (ctx,next) ->
-  ctx.user = store.users[ctx.params.user]
+user.find = (ctx,next) ->
+  ctx.user = store.users[ctx.params.username]
   return next() if ctx.user
-  models.User.find ctx.params.user, (err, user) ->
+  models.User.find ctx.params.username, (err, user) ->
     return console.log "Handle user not found" if err
-    store.users[ctx.params.user] = ctx.user = user
+    store.users[ctx.params.username] = ctx.user = user
     console.log "Loaded User:", ctx.user
     next()
 

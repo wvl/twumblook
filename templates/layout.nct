@@ -22,6 +22,7 @@
     {block main}
     {/block}
   </div>
+  <div id="modal" class="modal" style="display: none;"></div>
   <div id="mocha" class="integration bottom"></div>
   <footer>
   </footer>

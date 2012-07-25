@@ -20,6 +20,13 @@ class blog.Entry extends base.ItemView
 class blog.NewPost extends base.FormView
   initialize: ->
     @model ?= new models.Post()
+    @originalAttributes = _.clone(@model.attributes)
+    @bindTo @model, 'change', =>
+      @changed = _.any @model.attributes, (val,key) =>
+        val!=@originalAttributes[key] and !(val=='' and !_.has(@originalAttributes, key))
+
+  canNavigateAway: ->
+    !@changed
 
   events:
     'submit': 'handleFormSubmit'

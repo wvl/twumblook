@@ -135,6 +135,8 @@ module.exports.router = router = (base='') ->
   routers[base] = new Router(base)
   routers[''].mount routers[base]
 
+module.exports.canNavigateAway = -> true
+
 if (typeof window != 'undefined')
   router().on 'show', (ctx) ->
     if ctx.replace
@@ -153,6 +155,9 @@ if (typeof window != 'undefined')
     el = e.target
     el = el.parentNode while el and 'A' != el.nodeName
     return if !el or 'A' != el.nodeName
+
+    if !$(el).data('default') and !module.exports.canNavigateAway(el.href)
+      return e.preventDefault()
 
     href = el.href
     path = el.pathname + el.search

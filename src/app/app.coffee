@@ -14,6 +14,9 @@ routes = require './routes'
 module.exports = app = {}
 main = null
 
+base.routerModule.canNavigateAway = (href) ->
+  main.canNavigateAway(href)
+
 class Store
   constructor: ->
     @users = {}
@@ -46,10 +49,11 @@ router.page '/', user.home
 router.page '/login', user.login
 router.page '/signup', user.signup
 router.page '/dashboard/*', user.loggedIn
-router.page '/dashboard', blog.dashboard
+router.page '/dashboard', user.loggedIn, blog.dashboard
 router.page '/dashboard/text', blog.newpost
 router.page '/dashboard/link', blog.newlink
-# router.page '/:username/:id', user.find, blog.find, blog.entry
+router.page '/blog/:username', user.find, blog.list
+router.page '/blog/:username/:id', user.find, blog.find, blog.entry
 
 router.on 'show', (ctx, view) ->
   main.show view if view and view instanceof base.ItemView

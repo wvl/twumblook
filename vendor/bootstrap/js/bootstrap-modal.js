@@ -77,7 +77,7 @@
       }
 
     , hide: function (e) {
-        e && e.preventDefault()
+        if (e && !$(e.currentTarget).data('default')) e.preventDefault()
 
         var that = this
 
@@ -98,6 +98,8 @@
         $.support.transition && this.$element.hasClass('fade') ?
           hideWithTransition.call(this) :
           hideModal.call(this)
+
+        if (this.options.remove) this.$element.remove();
       }
 
   }

@@ -32,6 +32,8 @@ class models.Entry extends base.Model
 
 class models.Link extends models.Entry
 class models.Post extends models.Entry
+  validations:
+    required: ['text']
 
 class collections.Entries extends base.Collection
   urlRoot: '/api/entries'

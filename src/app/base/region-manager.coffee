@@ -1,4 +1,7 @@
 Backbone = require 'backbone'
+nct = require 'nct'
+if typeof window != 'undefined'
+  require 'bootstrap-modal'
 
 class RegionManager extends Backbone.Events
   constructor: (@$el, @options={}) ->
@@ -20,5 +23,12 @@ class RegionManager extends Backbone.Events
       @$el.html view.$el
     view.onShow() if view.onShow
     # @trigger('show', view)
+
+  canNavigateAway: (href) ->
+    return true unless @currentView['canNavigateAway']
+    return true if @currentView.canNavigateAway()
+    $('#modal').html nct.render('navigate_away', {href})
+    $('#modal').modal()
+    false
 
 module.exports = RegionManager
