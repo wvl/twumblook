@@ -25,7 +25,8 @@
       <div class="control-group {error.text}">
         <label class="control-label" for="text">Text</label>
         <div class="controls">
-          <textarea name="text" class="span6" rows="10">{text}</textarea>
+          {> bootstrap_toolbar}
+          <textarea id="text" name="text" class="span6" rows="10">{text}</textarea>
         </div>
       </div>
       <div class="form-actions">

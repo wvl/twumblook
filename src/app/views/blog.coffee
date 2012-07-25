@@ -25,6 +25,14 @@ class blog.NewPost extends base.FormView
       @changed = _.any @model.attributes, (val,key) =>
         val!=@originalAttributes[key] and !(val=='' and !_.has(@originalAttributes, key))
 
+  onShow: ->
+    @editor = new wysihtml5.Editor("text", {
+      toolbar:     @$('#wysihtml5-toolbar')[0]
+      parserRules: @wysihtml5ParserRules
+    })
+    @editor.on 'change', -> $('#text').trigger('change')
+
+
   canNavigateAway: ->
     !@changed
 

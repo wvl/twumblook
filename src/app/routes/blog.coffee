@@ -10,7 +10,8 @@ blog.find = (ctx, next) ->
 
 blog.dashboard = (ctx) -> new views.blog.Dashboard({model: store.user})
 
-blog.blog      = (ctx) -> new views.blog.Blog({model: ctx.user, collection: ctx.user.entries})
+blog.list = (ctx) ->
+  new views.blog.Blog({model: ctx.user, collection: ctx.user.entries})
 
 blog.newlink = (ctx) ->
   new views.blog.NewLink()
@@ -19,7 +20,7 @@ blog.newpost = (ctx) ->
   view = new views.blog.NewPost()
   view.on 'success', (post) ->
     store.entries[post.id] = post
-    router.show "/entries/#{post.id}"
+    router.show "/blog/#{ctx.user.get('username')}/#{post.id}"
 
 blog.entry = (ctx) ->
   new views.blog.Entry({model: store.entries[ctx.params.id]})

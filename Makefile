@@ -78,12 +78,15 @@ www/js/vendor/mocha.js: node_modules/mocha/mocha.js
 www/js/vendor/model_binder.js: vendor/js/Backbone.ModelBinder.js
 	cp $< $@
 
+www/js/vendor/wysihtml.js: vendor/js/wysihtml5-0.3.0.js
+	cp $< $@
+
 VENDORJS = jquery underscore moment backbone nct page toObject mocha
-VENDORJS := $(VENDORJS) model_binder
+VENDORJS := $(VENDORJS) model_binder wysihtml
 VENDORJS := $(VENDORJS:%=www/js/vendor/%.js)
 
 #BJS = tab dropdown modal tooltip popover collapse button datepicker scrollspy
-BJS = modal
+BJS = modal dropdown
 VENDORBJS = $(BJS:%=www/js/vendor/bootstrap-%.js)
 # BJS := $(BJS:%=vendor/bootstrap/js/bootstrap-%.js)
 

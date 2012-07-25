@@ -31,6 +31,9 @@ class Store
 _.extend Store.prototype, backbone.Events
 
 if (typeof window != 'undefined')
+  require 'bootstrap-modal'
+  require 'bootstrap-dropdown'
+  require 'wysihtml'
   window.browser = true
   $ = window.$
   window.router = router = base.router()

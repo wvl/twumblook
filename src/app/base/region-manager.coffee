@@ -1,7 +1,5 @@
 Backbone = require 'backbone'
 nct = require 'nct'
-if typeof window != 'undefined'
-  require 'bootstrap-modal'
 
 class RegionManager extends Backbone.Events
   constructor: (@$el, @options={}) ->
