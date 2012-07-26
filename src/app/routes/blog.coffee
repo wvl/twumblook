@@ -8,7 +8,9 @@ blog.find = (ctx, next) ->
     store.entries[ctx.params.id] = entry if entry
     next()
 
-blog.dashboard = (ctx) -> new views.blog.Dashboard({model: store.user})
+blog.dashboard = (ctx) ->
+  console.log "Dashboard"
+  new views.blog.Dashboard({model: store.user})
 
 blog.list = (ctx) ->
   new views.blog.Blog({model: ctx.user, collection: ctx.user.entries})
@@ -20,7 +22,7 @@ blog.newpost = (ctx) ->
   view = new views.blog.NewPost()
   view.on 'success', (post) ->
     store.entries[post.id] = post
-    router.show "/blog/#{ctx.user.get('username')}/#{post.id}"
+    router.show "/blog/#{store.user.get('username')}/#{post.id}"
 
 blog.entry = (ctx) ->
   new views.blog.Entry({model: store.entries[ctx.params.id]})

@@ -1,5 +1,6 @@
 models = require '../models'
 base = require '../base/index'
+_ = require 'underscore'
 module.exports = blog = {}
 
 class blog.BlogItem extends base.ItemView

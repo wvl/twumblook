@@ -19,7 +19,7 @@ class RegionManager extends Backbone.Events
       @$el.data('ssr', false)
     else
       @$el.html view.$el
-    view.onShow() if view.onShow
+    view.onShow() if view.onShow and browser
     # @trigger('show', view)
 
   canNavigateAway: (href) ->

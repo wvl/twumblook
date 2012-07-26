@@ -114,7 +114,7 @@ app.get "/*", (req,res) ->
   layout = fs.readFileSync(path.join(__dirname, '../templates/layout.nct'), 'utf8')
   user = if req.user then JSON.stringify(req.user.toApi()) else ""
   html = nct.renderTemplate(layout, {user, env})
-  if true
+  if false
     res.send html
   else
     $ = cheerio.load(html)

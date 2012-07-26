@@ -74,7 +74,7 @@ class ItemView extends Backbone.View
   # You can override this in your view definition.
   render: ->
     @renderTemplate()
-    @onRender()
+    @onRender() if browser
     @
 
   # rerender can be passed to event bindings, as it ignores arguments

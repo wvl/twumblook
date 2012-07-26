@@ -92,7 +92,7 @@ app.render = (jq, route='/', user=null, callback) ->
     callback(new Error("page show timeout"))
   ), 2000
   cb = (args...) ->
-    $('#app').attr('ssr', true)
+    $('#app').attr('data-ssr', true)
     clearTimeout timeout
     callback(args...)
 

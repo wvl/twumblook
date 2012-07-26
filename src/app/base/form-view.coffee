@@ -40,7 +40,7 @@ FormViewMixin =
     @error.message ?= "Error"
 
   onRender: ->
-    @binder.bind @model, @$el if browser
+    @binder.bind @model, @$el
 
   wysihtml5ParserRules:
     tags:
