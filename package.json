@@ -5,12 +5,14 @@
 , "private": true
 , "repository": { "url": "" }
 , "dependencies":
-  { "bcrypt": "*"
+  { "backbone": "*"
+  , "bcrypt": "*"
   , "cheerio": "*"
   , "commander": "*"
   , "express": ">3.0.0beta4"
   , "fa": "*"
   , "gm": "*"
+  , "highbrow": "*"
   , "less": "*"
   , "marked": "*"
   , "moment": "*"
@@ -33,6 +35,32 @@
   , "sockjs": "*"
   , "supertest": "*"
   , "uglify-js": "*"
+  }
+, "vendor":
+  { "backbone":
+    { "source": "node_modules/backbone/backbone.js"
+    , "shim": {"exports": "Backbone", "deps": ["underscore","jquery"]}
+    }
+  , "highbrow":
+    { "source": "node_modules/highbrow/dist/highbrow.js"
+    }
+  , "jquery":
+    { "source": "vendor/js/jquery-1.8.1.min.js"
+    }
+  , "model_binder":
+    { "source": "vendor/js/Backbone.ModelBinder.js"
+    }
+  , "moment":
+    { "source": "node_modules/moment/moment.js"
+    }
+  , "nct":
+    { "source": "node_modules/nct/dist/nct.js"
+    , "shim": {"exports": "nct", "deps": ["underscore"]}
+    }
+  , "underscore":
+    { "source": "node_modules/underscore/underscore-min.js"
+    , "shim": {"exports": "_"}
+    }
   }
 , "scripts":
   { "test": "mocha --compilers coffee:coffee-script test/base/*.test.coffee test/models/*.test.coffee test/api/*.test.coffee"

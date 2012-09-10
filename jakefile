@@ -1,0 +1,157 @@
+var fs = require('fs');
+var path = require('path');
+var _ = require('underscore');
+var nct = require('nct');
+
+exec = function(cmd,successMessage,errorMessage,callback) {
+  var options = { stderr: true, stdout: true, breakOnError: true };
+  var ex = jake.createExec([cmd], function() {
+    if (successMessage) console.log(successMessage);
+    callback()
+  }, options);
+  ex.addListener('error', function(message, code) {
+    console.log(errorMessage);
+    console.log(message);
+  });
+  ex.run();
+};
+
+var vendorJsDir = 'www/js/vendor/';
+jake.mkdirP(vendorJsDir);
+jake.mkdirP('www/css');
+
+var package = JSON.parse(fs.readFileSync(__dirname+'/package.json','utf8'));
+
+var vendorMap = _.reduce(package.vendor, function(memo,info,name) {
+  memo[info.source] = name+'.js';
+  return memo;
+}, {});
+vendorMap['node_modules/requirejs/require.js'] = 'require.js';
+
+var vendorFiles = _.map(vendorMap, function(dest) { return vendorJsDir+dest; });
+
+_.each(vendorMap, function(dest, source) {
+  file(vendorJsDir+dest, [source], function() {
+    jake.cpR(source,vendorJsDir+dest);
+  });
+});
+
+var app = new jake.FileList();
+app.include('lib/app/*.js');
+app.include('lib/app/**/*.js');
+
+var appJs = []
+
+app.forEach(function(source) {
+  var dest = source.replace(/lib\/app/, 'www/js/app');
+  appJs.push(dest);
+  file(dest, [source], function() {
+    var contents = fs.readFileSync(source, 'utf8');
+    jake.mkdirP(path.dirname(dest));
+    pre = "define(function(require,exports,module) {\n";
+    post = "\n  return module.exports;\n})";
+    fs.writeFileSync(dest, pre+contents+post, 'utf8');
+    console.log("amd", dest);
+  });
+});
+
+var templates = new jake.FileList();
+var templatesJs = [];
+templates.include('templates/*.nc*');
+templates.include('templates/**/*.nc*');
+templates.forEach(function(source) {
+  var dest = "lib/"+source.replace(/.nc[tc]/, '.js');
+  templatesJs.push(dest);
+  file(dest, [source], function() {
+    var contents = fs.readFileSync(source, 'utf8');
+    var isNcc = path.extname(source)==='.ncc'
+    if (isNcc) contents = nct.coffee.compile(contents)
+    var tmpl = nct.compiler.compile(contents)
+    var template_name = source.replace(/\.(nct|ncc)$/, '').replace(/templates\//, '');
+    var result = "nct.register("+tmpl+", '"+template_name+"')\n";
+    jake.mkdirP(path.dirname(dest));
+    fs.writeFileSync(dest, result, 'utf8');
+    console.log(isNcc ? "ncc" : "nct",dest);
+  });
+});
+
+file('www/js/app/templates.js', templatesJs, function() {
+  result = "define(['nct','underscore'], function(nct,_) {";
+  _.each(templatesJs, function(jsfile) {
+    try {
+      file = fs.readFileSync(jsfile, 'utf8');
+      result = result + file;
+    } catch (e) {
+      console.log("Error reading: ", jsfile);
+      if (!e || e.code!=='ENOENT') throw(e);
+    }
+  });
+  result = result + "});"
+  fs.writeFileSync('www/js/app/templates.js', result, 'utf8');
+  console.log('cat www/js/app/templates.js');
+});
+
+
+var less = new jake.FileList();
+less.include('vendor/bootstrap/less/*.less');
+less.include('lib/less/*.less');
+var lessDeps = less.toArray()
+//console.log("lessDeps: ", lessDeps);
+file('www/css/app.css', lessDeps, function() {
+  var cmd = 'node_modules/.bin/lessc -Ivendor/bootstrap/less'
+  cmd = cmd+' src/style/app.less > www/css/app.css'
+  console.log("Building css with: ", cmd);
+  exec(cmd, 'www/css/app.css', 'Less Compilation Error', complete);
+}, {async: true});
+
+var serverFiles = new jake.FileList();
+serverFiles.include('lib/server.js')
+serverFiles.include('lib/conf.js')
+serverFiles.include('lib/api/*.js')
+serverFiles.include('lib/models/*.js')
+var serverJs = serverFiles.toArray()
+var restartDeps = [].concat(serverJs).concat(appJs);
+// console.log("Restart on: ", restartDeps);
+
+file('tmp/app.development.pid', restartDeps, function() {
+  var pid = '';
+  try {
+    pid = fs.readFileSync(path.join(__dirname,'tmp','app.development.pid'))
+    if (pid) {
+      process.kill(pid, 'SIGUSR2');
+    }
+  } catch (e) {
+  }
+  fs.writeFileSync('tmp/app.development.pid', '', 'utf8');
+});
+
+
+var toBuild = [].concat(vendorFiles).concat(appJs).concat(templatesJs);
+toBuild.push('www/js/app/templates.js');
+toBuild.push('www/css/app.css');
+toBuild.push('tmp/app.development.pid');
+
+desc('Kill the running server if it exists.');
+task('kill', [ 'tmp/app.development.pid' ], function() {
+});
+
+desc('Build all the project files. (default)');
+task('build', toBuild, function() {
+});
+
+task('default', [ 'build' ], function() {
+});
+
+desc('Clean the project');
+task('clean', function() {
+  _.each(toBuild, function(dep) {
+    jake.rmRf(dep);
+  });
+});
+
+desc('Start the interactive server');
+task('serve', [ 'build' ], function() {
+  var cmd = './bin/dcc serve';
+  console.log("Running server via ./bin/dcc server");
+  exec(cmd, "Success", "Failed", function(){} );
+});
