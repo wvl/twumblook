@@ -1,6 +1,6 @@
+highbrow = require 'highbrow'
 
-base = require '../base/index'
-class Profile extends base.ItemView
+class Profile extends highbrow.ItemView
 
 module.exports = Profile
 

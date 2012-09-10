@@ -3,14 +3,14 @@ models = require '../models'
 views = require '../views'
 
 blog.find = (ctx, next) ->
-  return next() if store.entries[ctx.params.id]
-  models.Entry.find ctx.params.id, (err, entry) ->
-    store.entries[ctx.params.id] = entry if entry
+  return next() if @store.entries[ctx.params.id]
+  models.Entry.find ctx.params.id, (err, entry) =>
+    @store.entries[ctx.params.id] = entry if entry
     next()
 
 blog.dashboard = (ctx) ->
   console.log "Dashboard"
-  new views.blog.Dashboard({model: store.user})
+  new views.blog.Dashboard({model: @store.user})
 
 blog.list = (ctx) ->
   new views.blog.Blog({model: ctx.user, collection: ctx.user.entries})
@@ -20,9 +20,9 @@ blog.newlink = (ctx) ->
 
 blog.newpost = (ctx) ->
   view = new views.blog.NewPost()
-  view.on 'success', (post) ->
-    store.entries[post.id] = post
-    router.show "/blog/#{store.user.get('username')}/#{post.id}"
+  view.on 'success', (post) =>
+    @store.entries[post.id] = post
+    router.show "/blog/#{@store.user.get('username')}/#{post.id}"
 
 blog.entry = (ctx) ->
-  new views.blog.Entry({model: store.entries[ctx.params.id]})
+  new views.blog.Entry({model: @store.entries[ctx.params.id]})

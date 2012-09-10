@@ -1,24 +1,25 @@
-models = require '../models'
-base = require '../base/index'
-_ = require 'underscore'
+models   = require '../models'
+highbrow = require 'highbrow'
+_        = require 'underscore'
+
 module.exports = blog = {}
 
-class blog.BlogItem extends base.ItemView
+class blog.BlogItem extends highbrow.ItemView
   tagName: 'li'
   initialize: ->
     @template = _.underscored(@model.constructor.name)
 
-class blog.Blog extends base.CollectionView
+class blog.Blog extends highbrow.CollectionView
   itemView: blog.BlogItem
   appendHtml: (el, html) -> @$('ul.entries').append(html)
 
-class blog.Dashboard extends base.ItemView
+class blog.Dashboard extends highbrow.ItemView
 
-class blog.NewLink extends base.FormView
+class blog.NewLink extends highbrow.FormView
 
-class blog.Entry extends base.ItemView
+class blog.Entry extends highbrow.ItemView
 
-class blog.NewPost extends base.FormView
+class blog.NewPost extends highbrow.FormView
   initialize: ->
     @model ?= new models.Post()
     @originalAttributes = _.clone(@model.attributes)

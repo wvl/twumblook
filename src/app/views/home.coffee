@@ -1,8 +1,8 @@
 
 
-base = require '../base/index'
+highbrow = require 'highbrow'
 
-class Home extends base.ItemView
+class Home extends highbrow.ItemView
   initialize: ->
     @text = @options.text || "Hello Backbone Home"
 

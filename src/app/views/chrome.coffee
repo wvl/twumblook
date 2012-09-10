@@ -1,21 +1,21 @@
-base = require '../base/index'
+highbrow = require 'highbrow'
 models = require '../models'
 
 module.exports = chrome = {}
 
-class chrome.TopNav extends base.ItemView
+class chrome.TopNav extends highbrow.ItemView
   initialize: ->
     @session = new models.Session({_id: 'set', user: @model})
-    store.on 'set:user', (user) =>
-      @model = user
-      @session = new models.Session({_id: 'set', user})
-      @rerender()
+    # store.on 'set:user', (user) =>
+    #   @model = user
+    #   @session = new models.Session({_id: 'set', user})
+    #   @rerender()
 
   events: ->
     'click .logout': 'logout'
 
-  logout: ->
-    success = =>
-      store.set 'user', null
-      @trigger 'logout'
-    @session.destroy({success})
+  # logout: ->
+  #   success = =>
+  #     store.set 'user', null
+  #     @trigger 'logout'
+  #   @session.destroy({success})

@@ -8,13 +8,13 @@ cons       = require 'consolidate'
 cheerio    = require 'cheerio'
 nct        = require 'nct'
 passport   = require 'passport'
+highbrow   = require 'highbrow'
 Backbone   = require 'backbone'
-Backbone.$ = cheerio
-bCapServer = require 'buster-capture-server'
+highbrow.setDomLibrary(cheerio)
 
 conf       = require('./conf')()
 models     = require './models'
-client     = require './app/app'
+client     = require './app'
 api        = require './api'
 
 module.exports = app = express()
@@ -67,8 +67,8 @@ app.configure ->
   app.use express.methodOverride()
   app.use passport.initialize()
   app.use passport.session()
-  app.use app.router
   app.use express.static(__dirname + '/../www')
+  app.use app.router
 
 app.configure 'development', ->
   app.use allowCrossDomain
@@ -86,8 +86,10 @@ _.each api.routes, (routes, path) ->
 nct.onLoad = (name) ->
   dir = app.get('views')
   pathname = path.join(dir, name+'.nct')
-  return false unless fs.existsSync(pathname)
-  fs.readFileSync pathname, 'utf8'
+  return fs.readFileSync(pathname, 'utf8') if fs.existsSync(pathname)
+  pathname = path.join(dir, name+'.ncc')
+  return nct.coffee.compile fs.readFileSync(pathname, 'utf8') if fs.existsSync(pathname)
+  return false
 
 
 app.get '/jade', (req,res) ->
@@ -106,18 +108,21 @@ if conf.env == 'test'
     models.User.remove {}, ->
       res.send 'OK'
 
-  # buster = bCapServer.createServer()
-  # buster.attach(app)
+app.get '*', (req,res,next) ->
+  return res.send(404) if req.path.match(/^\/(api|img|css|js)/)
+  next()
 
+vendor = JSON.parse(fs.readFileSync(path.join(__dirname,'..','package.json'))).vendor
+config = conf.requireConfig({}, vendor, '/js', '/js/vendor/')
+config.packages = [{name: 'app', location: 'app', main: 'index'}]
 
 app.get "/*", (req,res) ->
   layout = fs.readFileSync(path.join(__dirname, '../templates/layout.nct'), 'utf8')
-  user = if req.user then JSON.stringify(req.user.toApi()) else ""
-  html = nct.renderTemplate(layout, {user, env})
+  user = if req.user then JSON.stringify(req.user.toApi()) else "null"
+  html = nct.renderTemplate(layout, {user, env, config: JSON.stringify(config)})
   if false
     res.send html
   else
     $ = cheerio.load(html)
-    client.render $, req.path, req.user?.toApi(), ->
+    client.render $, req.path, JSON.parse(user), ->
       res.send $.html()
-

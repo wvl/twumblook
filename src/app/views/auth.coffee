@@ -1,22 +1,18 @@
 module.exports = auth = {}
 
-base = require '../base/index'
+highbrow = require 'highbrow'
 models = require '../models'
 
-class auth.Login extends base.FormView
+class auth.Login extends highbrow.FormView
   initialize: ->
     @model ?= new models.Session()
-    @on 'success', (session) ->
-      store.set 'user', session.user
 
   events:
     'submit': 'handleFormSubmit'
 
-class auth.Signup extends base.FormView
+class auth.Signup extends highbrow.FormView
   initialize: ->
     @model ?= new models.User()
-    @on 'success', (user) ->
-      store.set 'user', user
 
   events:
     'submit': 'handleFormSubmit'

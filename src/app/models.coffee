@@ -1,10 +1,10 @@
 
-base = require './base/index'
+highbrow = require 'highbrow'
 
 module.exports = models = {}
 models.collections = collections = {}
 
-class models.User extends base.Model
+class models.User extends highbrow.Model
   urlRoot: '/api/users'
   # @relations:
   #   entries: collections.Entries
@@ -19,7 +19,7 @@ class models.User extends base.Model
 
     if e.errors.length then e else null
 
-class models.Session extends base.Model
+class models.Session extends highbrow.Model
   url: '/api/session'
   validations:
     required: ['username','password']
@@ -27,7 +27,7 @@ class models.Session extends base.Model
   @relations:
     user: models.User
 
-class models.Entry extends base.Model
+class models.Entry extends highbrow.Model
   urlRoot: '/api/entries'
 
 class models.Link extends models.Entry
@@ -35,7 +35,7 @@ class models.Post extends models.Entry
   validations:
     required: ['text']
 
-class collections.Entries extends base.Collection
+class collections.Entries extends highbrow.Collection
   urlRoot: '/api/entries'
   model: (attrs, options) ->
     switch attrs.type

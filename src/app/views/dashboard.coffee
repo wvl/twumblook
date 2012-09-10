@@ -1,7 +1,7 @@
 
-base = require '../base/index'
+highbrow = require 'highbrow'
 
-class Dashboard extends base.ItemView
+class Dashboard extends highbrow.ItemView
   events:
     'click .new-entry': 'newEntry'
 

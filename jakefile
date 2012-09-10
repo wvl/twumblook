@@ -1,7 +1,12 @@
-var fs = require('fs');
-var path = require('path');
-var _ = require('underscore');
-var nct = require('nct');
+var fs     = require('fs');
+var path   = require('path');
+var http   = require('http');
+
+var _      = require('underscore');
+var up     = require('up');
+var nct    = require('nct');
+var moment = require('moment');
+
 
 exec = function(cmd,successMessage,errorMessage,callback) {
   var options = { stderr: true, stdout: true, breakOnError: true };
@@ -36,11 +41,28 @@ _.each(vendorMap, function(dest, source) {
   });
 });
 
+/*
+* CoffeeScript Compile
+*/
+var coffee = new jake.FileList();
+coffee.include('src/*.coffee');
+coffee.include('src/**/*.coffee');
+var libJs = [];
+
+coffee.forEach(function(source) {
+  var dest = source.replace(/^src/, 'lib').replace(/\.coffee/, '.js');
+  libJs.push(dest);
+  file(dest, [source], function() {
+    var cmd = "./node_modules/.bin/coffee -b -o "+path.dirname(dest)+" -c "+source;
+    exec(cmd, 'coffee '+dest, 'Coffee Compilation Error', complete);
+  }, {async: true});
+});
+
 var app = new jake.FileList();
 app.include('lib/app/*.js');
 app.include('lib/app/**/*.js');
 
-var appJs = []
+var appJs = [];
 
 app.forEach(function(source) {
   var dest = source.replace(/lib\/app/, 'www/js/app');
@@ -116,8 +138,9 @@ var restartDeps = [].concat(serverJs).concat(appJs);
 file('tmp/app.development.pid', restartDeps, function() {
   var pid = '';
   try {
-    pid = fs.readFileSync(path.join(__dirname,'tmp','app.development.pid'))
-    if (pid) {
+    pid = fs.readFileSync(path.join(__dirname,'tmp','app.development.pid'), 'utf8')
+    console.log("restart: ", pid);
+    if (pid && pid !== '') {
       process.kill(pid, 'SIGUSR2');
     }
   } catch (e) {
@@ -126,7 +149,7 @@ file('tmp/app.development.pid', restartDeps, function() {
 });
 
 
-var toBuild = [].concat(vendorFiles).concat(appJs).concat(templatesJs);
+var toBuild = [].concat(vendorFiles).concat(libJs).concat(appJs).concat(templatesJs);
 toBuild.push('www/js/app/templates.js');
 toBuild.push('www/css/app.css');
 toBuild.push('tmp/app.development.pid');
@@ -151,7 +174,18 @@ task('clean', function() {
 
 desc('Start the interactive server');
 task('serve', [ 'build' ], function() {
-  var cmd = './bin/dcc serve';
-  console.log("Running server via ./bin/dcc server");
-  exec(cmd, "Success", "Failed", function(){} );
+  var conf = require('./lib/conf')();
+  var srvFile = path.join(process.cwd(),'lib','server');
+  var httpServer = http.Server();
+  httpServer.listen(conf.port);
+  var srv = up(httpServer, srvFile, {numWorkers: 1, workerTimeout: 1000});
+  console.log("server running on http://127.0.0.1:"+conf.port+" with pid: "+process.pid);
+  var pidfile = path.join(process.cwd(), 'tmp',"app."+conf.env+".pid");
+  fs.writeFile(pidfile, process.pid, 'utf8', function(err) {
+    if (err) console.error("Error writing pidfile: #{pidfile}");
+  });
+  process.on('SIGUSR2', function() {
+    console.log("Reloading Server (", conf.env, "): ", moment().format("dddd, h:mm:ss a"));
+    srv.reload()
+  });
 });
