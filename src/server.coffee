@@ -8,13 +8,14 @@ cons       = require 'consolidate'
 cheerio    = require 'cheerio'
 passport   = require 'passport'
 highbrow   = require 'highbrow'
-Backbone   = require 'backbone'
 highbrow.setDomLibrary(cheerio)
 
 conf       = require('./conf')()
 models     = require './models'
 client     = require './app'
 api        = require './api'
+
+_.underscored ?= highbrow.underscored
 
 module.exports = app = express()
 
@@ -24,7 +25,7 @@ methodMap =
   delete: 'delete'
   read:   'get'
 
-Backbone.sync = (method, model, options) ->
+highbrow.Backbone.sync = (method, model, options) ->
   timeout = setTimeout (->
     options.error("Server Backbone.sync timeout")
   ), 2000
@@ -114,19 +115,14 @@ app.get '*', (req,res,next) ->
 vendor = JSON.parse(fs.readFileSync(path.join(__dirname,'..','package.json'))).vendor
 config = conf.requireConfig({}, vendor, '/js', '/js/vendor/')
 config.packages = [{name: 'app', location: 'app', main: 'index'}]
+config = JSON.stringify(config)
+
+layoutPath = path.join(__dirname, '../templates/layout.nct')
 
 app.get "/*", (req,res) ->
-  # try
-  layout = fs.readFileSync(path.join(__dirname, '../templates/layout.nct'), 'utf8')
+  layout = fs.readFileSync(layoutPath, 'utf8')
   user = if req.user then JSON.stringify(req.user.toApi()) else "null"
-  html = highbrow.nct.renderTemplate(layout, {user, env, config: JSON.stringify(config)})
-  if false
-    res.send html
-  else
-    $ = cheerio.load(html)
-    client.render $, req.path, JSON.parse(user), ->
-      res.send $.html()
-  # catch e
-  #   console.log "Caught Error in app?"
-  #   console.error e
-  #   res.send 500
+  html = highbrow.nct.renderTemplate(layout, {user, env, config})
+  $ = cheerio.load(html)
+  client.render $, req.path, JSON.parse(user), ->
+    res.send $.html()

@@ -4,10 +4,24 @@ highbrow = require 'highbrow'
 module.exports = models = {}
 models.collections = collections = {}
 
+class models.Entry extends highbrow.Model
+class models.Link extends models.Entry
+class models.Post extends models.Entry
+  validations:
+    required: ['text']
+
+class collections.Entries extends highbrow.Collection
+  urlRoot: ':parent/entries'
+  model: (attrs, options) ->
+    switch attrs.type
+      when 'link' then new models.Link(attrs, options)
+      when 'post' then new models.Post(attrs, options)
+      else new models.Entry(attrs, options)
+
 class models.User extends highbrow.Model
   urlRoot: '/api/users'
-  # @relations:
-  #   entries: collections.Entries
+  @relations:
+    entries: collections.Entries
 
   validations:
     required: ['username','name','email']
@@ -27,18 +41,3 @@ class models.Session extends highbrow.Model
   @relations:
     user: models.User
 
-class models.Entry extends highbrow.Model
-  urlRoot: '/api/entries'
-
-class models.Link extends models.Entry
-class models.Post extends models.Entry
-  validations:
-    required: ['text']
-
-class collections.Entries extends highbrow.Collection
-  urlRoot: '/api/entries'
-  model: (attrs, options) ->
-    switch attrs.type
-      when 'link' then new models.Link(attrs, options)
-      when 'post' then new models.Post(attrs, options)
-      else new models.Entry(attrs, options)

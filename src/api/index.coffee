@@ -9,10 +9,11 @@ api.routes =
     get: u.list
     post: u.create
   'users/:username':
-    get: u.get
+    get: [u.find, u.get]
     delete: [u.find, u.delete]
     put: [u.find, u.update]
   'users/:username/entries':
+    post: [auth.loggedIn, u.find, e.create]
     get: [u.find, e.list]
   'session':
     get: auth.session

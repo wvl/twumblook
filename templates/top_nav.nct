@@ -3,6 +3,9 @@
     <a class="brand" href="/">twumblook</a>
     <ul class="nav mainnav">
       <li class=""><a href="/dashboard">Dashboard</a></li>
+      {if username}
+        <li class=""><a href="/blog/{username}">Blog</a></li>
+      {/if}
     </ul>
     <ul class="nav usernav pull-right">
       {if username}

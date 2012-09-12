@@ -61,6 +61,10 @@
     { "source": "node_modules/underscore/underscore-min.js"
     , "shim": {"exports": "_"}
     }
+  , "wysihtml5":
+    { "source": "vendor/js/wysihtml5-0.3.0.js"
+    , "shim": {"exports": "wysihtml5"}
+    }
   }
 , "scripts":
   { "test": "mocha --compilers coffee:coffee-script test/base/*.test.coffee test/models/*.test.coffee test/api/*.test.coffee"

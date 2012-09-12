@@ -1,1 +1,8 @@
-<h1>{title}</h1>
+{if text}
+<h2 class="entry-title">{title}</h2>
+<div>
+{- text}
+</div>
+{else}
+<h2><a href="{link}">{title}</a></h2>
+{/if}

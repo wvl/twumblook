@@ -7,6 +7,7 @@ highbrow.setViewModels(viewModels)
 views = require './views'
 models = require './models'
 routes = require './routes'
+{blog,user} = routes
 require './templates' if highbrow.browser
 
 module.exports = api = {}
@@ -28,21 +29,27 @@ full = (ctx,next) ->
         @show '/'
   next()
 
-buildApp = ($, user) ->
-  app = new highbrow.Application({$el: $('#full')})
-  app.store.set('user', new models.User(user)) if user
+buildApp = ($, u) ->
+  app = new highbrow.Application {$el: $('#full')}
+  app.store.set 'user', new models.User(u) if u
 
-  app.page '/', full, routes.user.home
-  app.page '/login', full, routes.user.login
-  app.page '/signup', full, routes.user.signup
+  app.page '/', full, user.home
+  app.page '/login', full, user.login
+  app.page '/signup', full, user.signup
 
-  dashboard = app.mount '/dashboard', routes.user.loggedIn
-  dashboard.page '', routes.blog.dashboard
-  dashboard.page '/text', routes.blog.newpost
-  dashboard.page '/link', routes.blog.newlink
+  dashboard = app.mount '/dashboard', user.loggedIn, blog.fetch, full
+  dashboard.page '', blog.dashboard
+  dashboard.page '/text', blog.newpost
+  dashboard.page '/link', blog.newlink
+  dashboard.page '/text/:id', blog.getEntry, blog.editPost
+  dashboard.page '/link/:id', blog.getEntry, blog.editLink
 
-  # app.page '/blog/:username', routes.user.find, routes.blog.list
-  # app.page '/blog/:username/:id', routes.user.find, routes.blog.find, routes.blog.entry
+  # blog = app.mount '/blog/:username', user.find, full
+  # blog.page '', blog.list
+  # blog.page '/:id', blog.find, blog.entry
+
+  app.page '/blog/:username', full, user.find, blog.fetch, blog.list
+  app.page '/blog/:username/:id', user.find, blog.find, blog.entry
 
   app.on 'show', (ctx, view) ->
     @display view if view and view instanceof highbrow.ItemView
@@ -54,12 +61,12 @@ buildApp = ($, user) ->
 #   #   router.show '/'
 #   main = new base.RegionManager($('#app'))
 
-api.init = (user) ->
-  app = buildApp($, user)
+api.init = (u) ->
+  app = buildApp($, u)
   app.start ->
 
-api.render = ($, route='/', user=null, callback) ->
-  app = buildApp($, user)
+api.render = ($, route='/', u=null, callback) ->
+  app = buildApp($, u)
   timeout = setTimeout (->
     callback(new Error("page show timeout"))
   ), 2000
