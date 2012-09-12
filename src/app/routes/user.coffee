@@ -25,7 +25,8 @@ user.loggedIn = (ctx, next) ->
 # Routes
 #
 
-user.home      = (ctx) -> new views.Home({text: 'Home'})
+user.home      = (ctx) ->
+  new views.Home({text: 'Home', model: @store.user})
 
 user.login     = (ctx) ->
   view = new views.auth.Login()

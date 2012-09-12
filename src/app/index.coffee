@@ -71,7 +71,6 @@ api.render = ($, route='/', u=null, callback) ->
     callback(new Error("page show timeout"))
   ), 2000
   cb = (args...) ->
-    $('#app').attr('data-ssr', 'true')
     clearTimeout timeout
     callback(args...)
 

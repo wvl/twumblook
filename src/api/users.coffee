@@ -22,6 +22,7 @@ api.list = (req, res) ->
 api.create = (req, res) ->
   User.beget req.body, (err, user) ->
     return res.send(err, 422) if err
+    req.logIn user, ->
     res.send user
 
 api.delete = (req, res) ->

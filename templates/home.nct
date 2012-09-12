@@ -1,7 +1,10 @@
-<h1>{text}</h1>
+{if username}
+<h1>Welcome {name}</h1>
 <ul>
-<li><a href="/login">Login</a></li>
 <li><a href="/dashboard">Dashboard</a></li>
-<li><a href="/wayne/profile">Profile</a></li>
-<li><a href="/wayne/blog">Blog</a></li>
+<li><a href="/{username}/blog">Blog</a></li>
 </ul>
+{else}
+Welcome to twumblook. Please <a href="/login">Login</a> or <a
+href="/signup">Signup</a>.
+{/if}

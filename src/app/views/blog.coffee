@@ -14,6 +14,7 @@ class blog.Blog extends highbrow.CollectionView
 class blog.Dashboard extends highbrow.ItemView
 
 class blog.Entry extends highbrow.ItemView
+  template: 'blog_item'
 
 class blog.NewPost extends highbrow.FormView
   initialize: ->
