@@ -87,7 +87,8 @@ templates.forEach(function(source) {
   file(dest, [source], function() {
     var contents = fs.readFileSync(source, 'utf8');
     var isNcc = path.extname(source)==='.ncc'
-    if (isNcc) contents = nct.coffee.compile(contents)
+    dir = path.join(__dirname, path.dirname(source));
+    if (isNcc) contents = nct.coffee.compile(contents, dir)
     var tmpl = nct.compiler.compile(contents)
     var template_name = source.replace(/\.(nct|ncc)$/, '').replace(/templates\//, '');
     var result = "nct.register("+tmpl+", '"+template_name+"')\n";

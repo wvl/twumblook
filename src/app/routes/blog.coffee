@@ -20,7 +20,10 @@ blog.list = (ctx) ->
   new views.blog.Blog({model: ctx.user, collection: ctx.user.entries})
 
 blog.newlink = (ctx) ->
-  new views.blog.NewLink()
+  view = new views.blog.NewLink({collection: ctx.user.entries})
+  view.on 'success', (post) =>
+    @store.setIn 'entries', post.id, post
+    @show "/blog/#{@store.user.get('username')}/#{post.id}"
 
 blog.newpost = (ctx) ->
   view = new views.blog.NewPost({collection: ctx.user.entries})

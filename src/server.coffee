@@ -88,7 +88,8 @@ highbrow.nct.onLoad = (name) ->
   pathname = path.join(dir, name+'.nct')
   return fs.readFileSync(pathname, 'utf8') if fs.existsSync(pathname)
   pathname = path.join(dir, name+'.ncc')
-  return highbrow.nct.coffee.compile fs.readFileSync(pathname, 'utf8') if fs.existsSync(pathname)
+  if fs.existsSync(pathname)
+    return highbrow.nct.coffee.compile fs.readFileSync(pathname, 'utf8'), path.join(dir,path.dirname(name))
   return false
 
 

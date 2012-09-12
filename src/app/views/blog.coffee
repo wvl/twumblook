@@ -13,8 +13,6 @@ class blog.Blog extends highbrow.CollectionView
 
 class blog.Dashboard extends highbrow.ItemView
 
-class blog.NewLink extends highbrow.FormView
-
 class blog.Entry extends highbrow.ItemView
 
 class blog.NewPost extends highbrow.FormView
@@ -34,6 +32,13 @@ class blog.NewPost extends highbrow.FormView
 
   canNavigateAway: ->
     !@changed
+
+  events:
+    'submit': 'handleFormSubmit'
+
+class blog.NewLink extends highbrow.FormView
+  initialize: ->
+    @model ?= new models.Link()
 
   events:
     'submit': 'handleFormSubmit'

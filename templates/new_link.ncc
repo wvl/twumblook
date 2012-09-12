@@ -1,0 +1,20 @@
+h = require('./helpers')
+
+div '.page-title', ->
+  h1 'New Link'
+
+div '.row.breathe-top', ->
+  div '.span6', ->
+    form '.new-link.form-vertical', ->
+      fieldset ->
+        $if '@error', ->
+          div '.alert', '@error.message'
+
+        h.field('title','@title', {label: 'Title'})
+        h.field('url', '@url', {label: 'Link'})
+
+        div '.form-actions', ->
+          button '.btn.btn-primary', {type: 'submit'}, 'Create Post'
+
+
+
