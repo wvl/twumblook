@@ -3,6 +3,11 @@ module.exports = user = {}
 models = require '../models'
 views = require '../views'
 
+#
+# Middleware
+#
+
+
 user.find = (ctx,next) ->
   ctx.user = @store.users[ctx.params.username]
   return next() if ctx.user
@@ -17,6 +22,10 @@ user.loggedIn = (ctx, next) ->
   return next() if @store.user
   console.log "redirecting to home"
   @show('/login')
+
+#
+# Routes
+#
 
 user.home      = (ctx) -> new views.Home({text: 'Home'})
 

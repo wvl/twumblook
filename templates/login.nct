@@ -15,7 +15,7 @@
     <div class="control-group {error.username}">
       <label class="control-label" for="name">Username</label>
       <div class="controls">
-        <input class="xlarge span3" name="username" type="text" value="{username}">
+        <input class="xlarge span3" autofocus="true" name="username" type="text" value="{username}">
         {if error.username}
           <span class="help-inline">{error.username_message}</span>
         {/if}

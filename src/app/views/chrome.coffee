@@ -14,8 +14,8 @@ class chrome.TopNav extends highbrow.ItemView
   events: ->
     'click .logout': 'logout'
 
-  # logout: ->
-  #   success = =>
-  #     store.set 'user', null
-  #     @trigger 'logout'
-  #   @session.destroy({success})
+  logout: (e) ->
+    e.preventDefault()
+    success = =>
+      @trigger 'logout'
+    @session.destroy({success})

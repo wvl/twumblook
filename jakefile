@@ -122,7 +122,6 @@ var lessDeps = less.toArray()
 file('www/css/app.css', lessDeps, function() {
   var cmd = 'node_modules/.bin/lessc -Ivendor/bootstrap/less'
   cmd = cmd+' src/style/app.less > www/css/app.css'
-  console.log("Building css with: ", cmd);
   exec(cmd, 'www/css/app.css', 'Less Compilation Error', complete);
 }, {async: true});
 
@@ -145,7 +144,7 @@ file('tmp/app.development.pid', restartDeps, function() {
     }
   } catch (e) {
   }
-  fs.writeFileSync('tmp/app.development.pid', '', 'utf8');
+  fs.writeFileSync('tmp/app.development.pid', pid, 'utf8');
 });
 
 

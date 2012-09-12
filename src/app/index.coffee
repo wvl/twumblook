@@ -7,7 +7,7 @@ highbrow.setViewModels(viewModels)
 views = require './views'
 models = require './models'
 routes = require './routes'
-require '../templates' if highbrow.browser
+require './templates' if highbrow.browser
 
 module.exports = api = {}
 
@@ -16,13 +16,25 @@ module.exports = api = {}
 #   require 'bootstrap-dropdown'
 #   require 'wysihtml'
 
+full = (ctx,next) ->
+  @layout 'full', 'layouts/full', '#app',
+    '#topnav': (el) ->
+      topnav = new views.chrome.TopNav({el, model: @store.user})
+      @store.on 'set:user', (user) ->
+        topnav.model = user
+        topnav.rerender()
+      topnav.on 'logout', =>
+        @store.set('user', null)
+        @show '/'
+  next()
+
 buildApp = ($, user) ->
   app = new highbrow.Application({$el: $('#full')})
   app.store.set('user', new models.User(user)) if user
 
-  app.page '/', routes.user.home
-  app.page '/login', routes.user.login
-  app.page '/signup', routes.user.signup
+  app.page '/', full, routes.user.home
+  app.page '/login', full, routes.user.login
+  app.page '/signup', full, routes.user.signup
 
   dashboard = app.mount '/dashboard', routes.user.loggedIn
   dashboard.page '', routes.blog.dashboard
@@ -52,7 +64,7 @@ api.render = ($, route='/', user=null, callback) ->
     callback(new Error("page show timeout"))
   ), 2000
   cb = (args...) ->
-    $('#app').attr('data-ssr', true)
+    $('#app').attr('data-ssr', 'true')
     clearTimeout timeout
     callback(args...)
 

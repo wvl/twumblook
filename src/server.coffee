@@ -6,7 +6,6 @@ http       = require 'http'
 _          = require 'underscore'
 cons       = require 'consolidate'
 cheerio    = require 'cheerio'
-nct        = require 'nct'
 passport   = require 'passport'
 highbrow   = require 'highbrow'
 Backbone   = require 'backbone'
@@ -83,12 +82,12 @@ _.each api.routes, (routes, path) ->
     else
       app[method] '/api/'+path, fn
 
-nct.onLoad = (name) ->
+highbrow.nct.onLoad = (name) ->
   dir = app.get('views')
   pathname = path.join(dir, name+'.nct')
   return fs.readFileSync(pathname, 'utf8') if fs.existsSync(pathname)
   pathname = path.join(dir, name+'.ncc')
-  return nct.coffee.compile fs.readFileSync(pathname, 'utf8') if fs.existsSync(pathname)
+  return highbrow.nct.coffee.compile fs.readFileSync(pathname, 'utf8') if fs.existsSync(pathname)
   return false
 
 
@@ -117,12 +116,17 @@ config = conf.requireConfig({}, vendor, '/js', '/js/vendor/')
 config.packages = [{name: 'app', location: 'app', main: 'index'}]
 
 app.get "/*", (req,res) ->
+  # try
   layout = fs.readFileSync(path.join(__dirname, '../templates/layout.nct'), 'utf8')
   user = if req.user then JSON.stringify(req.user.toApi()) else "null"
-  html = nct.renderTemplate(layout, {user, env, config: JSON.stringify(config)})
+  html = highbrow.nct.renderTemplate(layout, {user, env, config: JSON.stringify(config)})
   if false
     res.send html
   else
     $ = cheerio.load(html)
     client.render $, req.path, JSON.parse(user), ->
       res.send $.html()
+  # catch e
+  #   console.log "Caught Error in app?"
+  #   console.error e
+  #   res.send 500
