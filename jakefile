@@ -116,7 +116,7 @@ file('www/js/app/templates.js', templatesJs, function() {
 
 var less = new jake.FileList();
 less.include('vendor/bootstrap/less/*.less');
-less.include('lib/less/*.less');
+less.include('src/style/*.less');
 var lessDeps = less.toArray()
 //console.log("lessDeps: ", lessDeps);
 file('www/css/app.css', lessDeps, function() {
